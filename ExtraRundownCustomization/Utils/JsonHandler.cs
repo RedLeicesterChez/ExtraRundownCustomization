@@ -4,9 +4,6 @@ using ExtraRundownCustomization.DataHolders;
 using System.Text.Json;
 using System.Text.Encodings.Web;
 using ExtraRundownCustomization.Handlers;
-using System.Text.Json.Serialization;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace ExtraRundownCustomization.Utils
 {
@@ -45,7 +42,6 @@ namespace ExtraRundownCustomization.Utils
             {
                 Log.Info("ReWriting rundown selection file");
                 CustomRundownSelections json = new();
-                json.InitializeDefaults();
                 var jsonData = JsonSerializer.Serialize(json, _setting);
                 File.WriteAllText(customRundownSelectionsPath, jsonData);
             }

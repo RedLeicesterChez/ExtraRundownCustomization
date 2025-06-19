@@ -2,6 +2,7 @@
 using ExtraRundownCustomization.DataHolders;
 using ExtraRundownCustomization.Utils;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace ExtraRundownCustomization.Handlers
@@ -59,7 +60,7 @@ namespace ExtraRundownCustomization.Handlers
 
                         obj.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R1.posX, m_activeRundownSelectionData.Selector_R1.posY, m_activeRundownSelectionData.Selector_R1.posZ);
                         obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R1.rotX, m_activeRundownSelectionData.Selector_R1.rotY, m_activeRundownSelectionData.Selector_R1.rotZ));
-                        obj.transform.GetChild(0).localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R1.scaleX, m_activeRundownSelectionData.Selector_R1.scaleY, m_activeRundownSelectionData.Selector_R1.scaleZ);
+                        obj.transform.GetChild(1).localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R1.scaleX, m_activeRundownSelectionData.Selector_R1.scaleY, m_activeRundownSelectionData.Selector_R1.scaleZ);
 
                         var comp = obj.GetComponent<CM_RundownSelection>();
                         comp.m_rundownText.text = m_activeRundownSelectionData.Selector_R1.name;
@@ -155,14 +156,15 @@ namespace ExtraRundownCustomization.Handlers
 
                         obj.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.posX, m_activeRundownSelectionData.Selector_R7.posY, m_activeRundownSelectionData.Selector_R7.posZ);
                         obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.rotX, m_activeRundownSelectionData.Selector_R7.rotY, m_activeRundownSelectionData.Selector_R7.rotZ));
-                        obj.transform.GetChild(0).localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.scaleX, m_activeRundownSelectionData.Selector_R7.scaleY, m_activeRundownSelectionData.Selector_R7.scaleZ);
+                        obj.transform.GetChild(1).localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.scaleX, m_activeRundownSelectionData.Selector_R7.scaleY, m_activeRundownSelectionData.Selector_R7.scaleZ);
 
                         var comp = obj.GetComponent<CM_RundownSelection>();
+                        TextMeshPro altText = obj.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
                         comp.m_rundownText.text = m_activeRundownSelectionData.Selector_R7.name;
-                        comp.m_altText.text = m_activeRundownSelectionData.Selector_R7.altText;
+                        altText.text = m_activeRundownSelectionData.Selector_R7.altText;
                         comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.namePosX, m_activeRundownSelectionData.Selector_R7.namePosY, m_activeRundownSelectionData.Selector_R7.namePosZ);
-                        comp.m_altText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.altTextPosX, m_activeRundownSelectionData.Selector_R7.altTextPosY, m_activeRundownSelectionData.Selector_R7.altTextPosZ);
-                        comp.transform.GetChild(0).GetChild(0).gameObject.SetActive(true);
+                        altText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.altTextPosX, m_activeRundownSelectionData.Selector_R7.altTextPosY, m_activeRundownSelectionData.Selector_R7.altTextPosZ);
+                        altText.gameObject.SetActive(true);
                     }
                     break;
 

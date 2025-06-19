@@ -33,7 +33,7 @@
             altTextPosZ = 0.0f
         };
 
-        public RundownSelector Selector_R2{ get; set; } = new RundownSelector()
+        public RundownSelector Selector_R2 { get; set; } = new RundownSelector()
         {
             name = "R2",
             altText = "<color=orange>ALT://",
@@ -188,13 +188,7 @@
             altTextPosY = 34.8f,
             altTextPosZ = 0f
         };
-        public Selection_R8 Selector_R8 { get; set; }
-
-        public void InitializeDefaults()
-        {
-            
-            Selector_R8 = new();
-        }
+        public Selection_R8 Selector_R8 { get; set; } = new();
     }
 
     public class RundownSelector
