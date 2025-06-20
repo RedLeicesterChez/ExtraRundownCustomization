@@ -58,7 +58,7 @@ namespace ExtraRundownCustomization.Utils
             }
             var codedRundownLayoutJson = File.ReadAllText(customRundownLayoutPath);
             RundownLayout rundownLayoutDecoded = JsonSerializer.Deserialize<RundownLayout>(codedRundownLayoutJson, _setting);
-            RundownMenuHandlers.m_globalRundownLayout = rundownLayoutDecoded;
+            RundownMenuHandlers.m_activeGlobalRundownLayoutData = rundownLayoutDecoded;
 
             //Watermark loading
             string customWatermarkPath = Path.Combine(ERC_CustomPath + "/watermark.json");
@@ -80,7 +80,7 @@ namespace ExtraRundownCustomization.Utils
             }
         }
 
-        private static void OnHotReload()
+        public static void OnHotReload()
         {
             Log.Info("Reloading json");
             LoadJson(true);

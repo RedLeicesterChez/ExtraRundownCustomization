@@ -2,6 +2,8 @@
 using ExtraRundownCustomization.Handlers;
 using ExtraRundownCustomization.Utils;
 using HarmonyLib;
+using System;
+using UnityEngine;
 
 namespace ExtraRundownCustomization.Patches
 {
@@ -9,12 +11,22 @@ namespace ExtraRundownCustomization.Patches
     {
         public static void Setup()
         {
+            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_UpdateExpeditionIconProgression));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_OnEnable));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_ResetElements));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_TryPlaceRundown));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_Setup));
             Harmony.CreateAndPatchAll(typeof(Patch_PUI_Watermark_UpdateWatermark));
             Log.Info("ERC GUI_Patches Setup");
+        }
+
+        [HarmonyPatch(typeof(CM_PageRundown_New), "UpdateExpeditionIconProgression")]
+        private class Patch_CM_PageRundown_New_UpdateExpeditionIconProgression
+        {
+            public static void Postfix(CM_PageRundown_New __instance)
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
         }
 
         [HarmonyPatch(typeof(CM_PageRundown_New), "ResetRundownSelection")]
@@ -59,7 +71,7 @@ namespace ExtraRundownCustomization.Patches
             public static void Postfix(CM_PageRundown_New __instance)
             {
                 __instance.m_selectRundownButton.m_onBtnPress.AddListener((UnityEngine.Events.UnityAction)RundownMenuHandlers.UpdateRundownSelections);
-                //__instance.m_selectRundownButton.OnBtnPressCallback = (Action<int>)((_) => { RundownMenuHandlers.UpdateRundownSelections();});;
+                //__instance.m_selectRundownButton.m_onBtnPress.AddListener((UnityEngine.Events.UnityAction)RundownMenuHandlers.SetSelectedRundownFalse);
                 RundownMenuHandlers.m_rundownInstance = __instance;
                 RundownMenuHandlers.UpdateRundownSelections();
             }
