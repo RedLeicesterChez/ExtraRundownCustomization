@@ -58,6 +58,7 @@ namespace ExtraRundownCustomization.Patches
         {
             public static void Postfix(CM_PageRundown_New __instance)
             {
+                __instance.m_selectRundownButton.m_onBtnPress.AddListener((UnityEngine.Events.UnityAction)RundownMenuHandlers.UpdateRundownSelections);
                 //__instance.m_selectRundownButton.OnBtnPressCallback = (Action<int>)((_) => { RundownMenuHandlers.UpdateRundownSelections();});;
                 RundownMenuHandlers.m_rundownInstance = __instance;
                 RundownMenuHandlers.UpdateRundownSelections();

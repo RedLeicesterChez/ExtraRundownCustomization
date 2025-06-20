@@ -37,19 +37,30 @@ namespace ExtraRundownCustomization.Utils
             Log.Info("Loading Json Data");
 
             //Rundown Selection loading
-            string customRundownSelectionsPath = Path.Combine(ERC_CustomPath + "/rundownSelections.json");
+            string customRundownSelectionsPath = Path.Combine(ERC_CustomPath + "/rundownSelectors.json");
             if (!File.Exists(customRundownSelectionsPath))
             {
-                Log.Info("ReWriting rundown selection file");
                 CustomRundownSelections json = new();
                 var jsonData = JsonSerializer.Serialize(json, _setting);
                 File.WriteAllText(customRundownSelectionsPath, jsonData);
             }
             var codedRundownSelectionJson = File.ReadAllText(customRundownSelectionsPath);
-            CustomRundownSelections rundownSelectionDecoded = JsonSerializer.Deserialize<CustomRundownSelections>(codedRundownSelectionJson);
+            CustomRundownSelections rundownSelectionDecoded = JsonSerializer.Deserialize<CustomRundownSelections>(codedRundownSelectionJson, _setting);
             RundownMenuHandlers.m_activeRundownSelectionData = rundownSelectionDecoded;
 
-            //Watermark Loading
+            //Rundown Layout loading
+            string customRundownLayoutPath = Path.Combine(ERC_CustomPath + "/rundownLayouts.json");
+            if (!File.Exists(customRundownLayoutPath))
+            {
+                RundownLayout json = new();
+                var jsonData = JsonSerializer.Serialize(json, _setting);
+                File.WriteAllText(customRundownLayoutPath, jsonData);
+            }
+            var codedRundownLayoutJson = File.ReadAllText(customRundownLayoutPath);
+            RundownLayout rundownLayoutDecoded = JsonSerializer.Deserialize<RundownLayout>(codedRundownLayoutJson, _setting);
+            RundownMenuHandlers.m_globalRundownLayout = rundownLayoutDecoded;
+
+            //Watermark loading
             string customWatermarkPath = Path.Combine(ERC_CustomPath + "/watermark.json");
             if (!File.Exists(customWatermarkPath))
             {
@@ -58,7 +69,7 @@ namespace ExtraRundownCustomization.Utils
                 File.WriteAllText(customWatermarkPath, jsonData);
             }
             var codedWatermarkJson = File.ReadAllText(customWatermarkPath);
-            CustomWatermark customWatermarkDecoded = JsonSerializer.Deserialize<CustomWatermark>(codedWatermarkJson);
+            CustomWatermark customWatermarkDecoded = JsonSerializer.Deserialize<CustomWatermark>(codedWatermarkJson, _setting);
             RundownMenuHandlers.m_activeWatermarkData = customWatermarkDecoded;
 
             Log.Info("Json data Loaded");
