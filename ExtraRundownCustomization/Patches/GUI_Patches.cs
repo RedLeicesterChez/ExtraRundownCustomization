@@ -11,19 +11,80 @@ namespace ExtraRundownCustomization.Patches
     {
         public static void Setup()
         {
+            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_SetIconStatus));
+            //Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_Update));
+            Harmony.CreateAndPatchAll(typeof(Patch_CM_ExpeditionIcon_New_UpdateBorderColor));
+            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_UpdateTierIconsWithProgression));
+            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_RundownSelectionRevealed));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_UpdateExpeditionIconProgression));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_OnEnable));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_ResetElements));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_TryPlaceRundown));
             Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_Setup));
             Harmony.CreateAndPatchAll(typeof(Patch_PUI_Watermark_UpdateWatermark));
+
             Log.Info("ERC GUI_Patches Setup");
+        }
+
+        [HarmonyPatch(typeof(CM_PageRundown_New), "SetIconStatus")]
+        private class Patch_CM_PageRundown_New_SetIconStatus
+        {
+            public static void Postfix()
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
+        }
+
+        [HarmonyPatch(typeof(CM_PageRundown_New), "Update")]
+        private class Patch_CM_PageRundown_New_Update()
+        {
+            public static void Postfix()
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
+        }
+
+        [HarmonyPatch(typeof(CM_ExpeditionIcon_New), "UpdateBorderColor")]
+        private class Patch_CM_ExpeditionIcon_New_UpdateBorderColor
+        {
+            public static void Postfix()
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
+        }
+
+        [HarmonyPatch(typeof(CM_ExpeditionIcon_New), "UpdateBorderColor")]
+        private class Patch_CM_ExpeditionIcon_New_SetIconStatus
+        {
+            
+            public static void Postfix()
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
+        }
+
+        [HarmonyPatch(typeof(CM_PageRundown_New), "UpdateTierIconsWithProgression")]
+        private class Patch_CM_PageRundown_New_UpdateTierIconsWithProgression
+        {
+            public static void Postfix()
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
+        }
+
+        [HarmonyPatch(typeof(CM_PageRundown_New), "RundownSelectionRevealed")]
+        private class Patch_CM_PageRundown_New_RundownSelectionRevealed
+        {
+            public static void Postfix()
+            {
+                RundownMenuHandlers.UpdateExpeditionIcons();
+            }
         }
 
         [HarmonyPatch(typeof(CM_PageRundown_New), "UpdateExpeditionIconProgression")]
         private class Patch_CM_PageRundown_New_UpdateExpeditionIconProgression
         {
-            public static void Postfix(CM_PageRundown_New __instance)
+            public static void Postfix()
             {
                 RundownMenuHandlers.UpdateExpeditionIcons();
             }
@@ -70,10 +131,16 @@ namespace ExtraRundownCustomization.Patches
         {
             public static void Postfix(CM_PageRundown_New __instance)
             {
-                __instance.m_selectRundownButton.m_onBtnPress.AddListener((UnityEngine.Events.UnityAction)RundownMenuHandlers.UpdateRundownSelections);
-                //__instance.m_selectRundownButton.m_onBtnPress.AddListener((UnityEngine.Events.UnityAction)RundownMenuHandlers.SetSelectedRundownFalse);
+                __instance.m_selectRundownButton.OnBtnPressCallback += (Action<int>)((id) => RundownMenuHandlers.UpdateRundownSelections());
+                __instance.m_selectRundownButton.OnBtnPressCallback += (Action<int>)((id) => RundownMenuHandlers.ChangeHasSelectedRundown(false));
+
                 RundownMenuHandlers.m_rundownInstance = __instance;
                 RundownMenuHandlers.UpdateRundownSelections();
+
+                foreach (GameObject obj in RundownMenuHandlers.rundownSelectors)
+                {
+                    obj.GetComponent<CM_RundownSelection>().OnBtnPressCallback += (Action<int>)((id) => RundownMenuHandlers.ChangeHasSelectedRundown(true));
+                }
             }
         }
 

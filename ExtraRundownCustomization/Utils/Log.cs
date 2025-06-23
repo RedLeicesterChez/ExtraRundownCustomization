@@ -30,13 +30,5 @@ namespace ExtraRundownCustomization.Utils
         public static void Warn(BepInExWarningLogInterpolatedStringHandler handler) => _Logger.LogWarning(handler);
         public static void Warn(string str) => _Logger.LogWarning(str);
         public static void Warn(object data) => _Logger.LogWarning(Format(data));
-
-        [Conditional("DEBUG")]
-        public static void DebugOnly(object data)
-        {
-#if DEBUG
-            _Logger.LogDebug(Format(data));
-#endif
-        }
     }
 }

@@ -13,8 +13,6 @@ namespace ExtraRundownCustomization
             GUI_Patches.Setup();
             JsonHandler.SetupJson();
 
-
-
             Log.LogInfo("ExtraRundownCustomisation Loaded");
         }
     }

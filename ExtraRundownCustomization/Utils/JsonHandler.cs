@@ -60,6 +60,18 @@ namespace ExtraRundownCustomization.Utils
             RundownLayout rundownLayoutDecoded = JsonSerializer.Deserialize<RundownLayout>(codedRundownLayoutJson, _setting);
             RundownMenuHandlers.m_activeGlobalRundownLayoutData = rundownLayoutDecoded;
 
+            //ExtraRundownDataLoading
+            string miscRundownFeaturePath = Path.Combine(ERC_CustomPath + "/miscFeatures.json");
+            if (!File.Exists(miscRundownFeaturePath))
+            {
+                MiscRundownData json = new();
+                var jsonData = JsonSerializer.Serialize(json, _setting);
+                File.WriteAllText(miscRundownFeaturePath, jsonData);
+            }
+            var codedExtraRundownJson = File.ReadAllText(miscRundownFeaturePath);
+            MiscRundownData miscRundownDataDecoded = JsonSerializer.Deserialize<MiscRundownData>(codedExtraRundownJson, _setting);
+            RundownMenuHandlers.m_activeMiscRundownData = miscRundownDataDecoded;
+
             //Watermark loading
             string customWatermarkPath = Path.Combine(ERC_CustomPath + "/watermark.json");
             if (!File.Exists(customWatermarkPath))
