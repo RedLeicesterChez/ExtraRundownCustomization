@@ -35,54 +35,17 @@ namespace ExtraRundownCustomization.Utils
         private static void LoadJson(bool isHotReload = false)
         {
             Log.Info("Loading Json Data");
+            string rundownSelectorsPath = Path.Combine(ERC_CustomPath + "/rundownSelectors.json");
+            RundownMenuHandlers.m_activeRundownSelectionData = DeserializeJsonAndCreateIfNotReal(rundownSelectorsPath, new CustomRundownSelections());
 
-            //Rundown Selection loading
-            string customRundownSelectionsPath = Path.Combine(ERC_CustomPath + "/rundownSelectors.json");
-            if (!File.Exists(customRundownSelectionsPath))
-            {
-                CustomRundownSelections json = new();
-                var jsonData = JsonSerializer.Serialize(json, _setting);
-                File.WriteAllText(customRundownSelectionsPath, jsonData);
-            }
-            var codedRundownSelectionJson = File.ReadAllText(customRundownSelectionsPath);
-            CustomRundownSelections rundownSelectionDecoded = JsonSerializer.Deserialize<CustomRundownSelections>(codedRundownSelectionJson, _setting);
-            RundownMenuHandlers.m_activeRundownSelectionData = rundownSelectionDecoded;
+            string rundownLayoutPath = Path.Combine(ERC_CustomPath + "/rundownLayouts.json");
+            RundownMenuHandlers.m_activeGlobalRundownLayoutData = DeserializeJsonAndCreateIfNotReal(rundownLayoutPath, new RundownLayout());
 
-            //Rundown Layout loading
-            string customRundownLayoutPath = Path.Combine(ERC_CustomPath + "/rundownLayouts.json");
-            if (!File.Exists(customRundownLayoutPath))
-            {
-                RundownLayout json = new();
-                var jsonData = JsonSerializer.Serialize(json, _setting);
-                File.WriteAllText(customRundownLayoutPath, jsonData);
-            }
-            var codedRundownLayoutJson = File.ReadAllText(customRundownLayoutPath);
-            RundownLayout rundownLayoutDecoded = JsonSerializer.Deserialize<RundownLayout>(codedRundownLayoutJson, _setting);
-            RundownMenuHandlers.m_activeGlobalRundownLayoutData = rundownLayoutDecoded;
+            string miscRundownDataPath = Path.Combine(ERC_CustomPath + "/miscFeatures.json");
+            RundownMenuHandlers.m_activeMiscRundownData = DeserializeJsonAndCreateIfNotReal(miscRundownDataPath, new MiscRundownData());
 
-            //ExtraRundownDataLoading
-            string miscRundownFeaturePath = Path.Combine(ERC_CustomPath + "/miscFeatures.json");
-            if (!File.Exists(miscRundownFeaturePath))
-            {
-                MiscRundownData json = new();
-                var jsonData = JsonSerializer.Serialize(json, _setting);
-                File.WriteAllText(miscRundownFeaturePath, jsonData);
-            }
-            var codedExtraRundownJson = File.ReadAllText(miscRundownFeaturePath);
-            MiscRundownData miscRundownDataDecoded = JsonSerializer.Deserialize<MiscRundownData>(codedExtraRundownJson, _setting);
-            RundownMenuHandlers.m_activeMiscRundownData = miscRundownDataDecoded;
-
-            //Watermark loading
-            string customWatermarkPath = Path.Combine(ERC_CustomPath + "/watermark.json");
-            if (!File.Exists(customWatermarkPath))
-            {
-                CustomWatermark json = new();
-                var jsonData = JsonSerializer.Serialize(json, _setting);
-                File.WriteAllText(customWatermarkPath, jsonData);
-            }
-            var codedWatermarkJson = File.ReadAllText(customWatermarkPath);
-            CustomWatermark customWatermarkDecoded = JsonSerializer.Deserialize<CustomWatermark>(codedWatermarkJson, _setting);
-            RundownMenuHandlers.m_activeWatermarkData = customWatermarkDecoded;
+            string watermarkPath = Path.Combine(ERC_CustomPath + "/watermark.json");
+            RundownMenuHandlers.m_activeWatermarkData = DeserializeJsonAndCreateIfNotReal(watermarkPath, new CustomWatermark());
 
             Log.Info("Json data Loaded");
 
@@ -90,6 +53,17 @@ namespace ExtraRundownCustomization.Utils
             {
                 RundownMenuHandlers.UpdateAll();
             }
+        }
+
+        private static T DeserializeJsonAndCreateIfNotReal<T>(string jsonPath, T data)
+        {
+            if (!File.Exists(jsonPath))
+            {
+                var jsonData = JsonSerializer.Serialize(data, _setting);
+                File.WriteAllText(jsonPath, jsonData);
+            }
+            string codedJson = File.ReadAllText(jsonPath);
+            return JsonSerializer.Deserialize<T>(codedJson, _setting);
         }
 
         public static void OnHotReload()
