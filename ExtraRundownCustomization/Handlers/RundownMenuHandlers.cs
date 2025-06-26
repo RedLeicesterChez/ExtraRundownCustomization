@@ -1,9 +1,10 @@
 ﻿using CellMenu;
 using ExtraRundownCustomization.DataHolders;
 using ExtraRundownCustomization.Utils;
+using GameData;
 using Il2CppSystem;
+using LocalProgression;
 using System.Collections.Generic;
-using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -18,13 +19,21 @@ namespace ExtraRundownCustomization.Handlers
 
         public static CM_PageRundown_New m_rundownInstance;
         public static PUI_Watermark m_watermarkInstance;
+
+        public static bool m_hasLocalProg = false;
         public static void UpdateAll()
         {
             UpdateRundownSelections();
             UpdateWatermark(m_watermarkInstance);
             UpdateMiscFeatures();
-            UpdateExpeditionIcons();
-            AddReloadButton();
+            if (m_rundownInstance.m_rundownIsRevealed)
+            {
+                UpdateExpeditionIcons();
+            }
+            if (m_activeMiscRundownData.EnableERCDataReload)
+            {
+                AddReloadButton();
+            }
         }
 
         public static void AddReloadButton()
@@ -39,18 +48,11 @@ namespace ExtraRundownCustomization.Handlers
         }
 
         public static List<GameObject> rundownSelectors = new();
-        public static bool HasSelectedRundown = false;
-
-        public static void ChangeHasSelectedRundown(bool state)
-        {
-            Log.Info("Changing HasSelectedRundown to :" + state);
-            HasSelectedRundown = state;
-        }
 
         public static void UpdateRundownSelections(bool isRepeat = false)
         {
             AddReloadButton();
-            Log.Info("Updating Rundown Selections");
+            //Log.Info("Updating Rundown Selections");
             if (!m_activeRundownSelectionData.Enabled)
             {
                 Log.Info("Rundown Selection data is not enabled");
@@ -65,11 +67,6 @@ namespace ExtraRundownCustomization.Handlers
             }
 
             UpdateMiscFeatures();
-            if (m_activeGlobalRundownLayoutData.IsSingleRundown)
-            {
-                m_rundownInstance.m_textRundownHeaderTop.gameObject.SetActive(true);
-                __instance.m_textRundownHeaderTop.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
-            }
 
             rundownSelectors.Clear();
             for (int i = 0; i < 8; i++)
@@ -81,7 +78,13 @@ namespace ExtraRundownCustomization.Handlers
             __instance.m_textRundownHeader.text = m_activeRundownSelectionData.TextHeader;
             __instance.m_textRundownHeaderTop.text = m_activeRundownSelectionData.TextHeaderTop;
 
-            if (HasSelectedRundown)
+            if (m_activeGlobalRundownLayoutData.IsSingleRundown)
+            {
+                m_rundownInstance.m_textRundownHeaderTop.gameObject.SetActive(true);
+                __instance.m_textRundownHeaderTop.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
+            }
+
+            if (__instance.m_rundownIsRevealed)
             {
                 __instance.m_textRundownHeader.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
             }
@@ -178,24 +181,28 @@ namespace ExtraRundownCustomization.Handlers
             UpdateMiscFeatures();
             if (!m_activeGlobalRundownLayoutData.Enabled)
             {
-                Log.Info("Rundown layout update disabled");
+                //Log.Info("Rundown layout update disabled");
                 return;
             }
             if (m_rundownInstance == null)
             {
-                Log.Info("Instance is null");
+                Log.Error("m_rundownInstance is null");
                 return;
             }
+
+            m_rundownInstance.m_textRundownHeader.text = m_activeRundownSelectionData.TextHeader;
+            m_rundownInstance.m_textRundownHeaderTop.text = m_activeRundownSelectionData.TextHeaderTop;
 
             int index;
             void UpdateIcon(CM_ExpeditionIcon_New expIcon, ExpeditionButton data)
             {
+                //Log.Info("Updating Expedition Icon");
                 if (expIcon == null)
                 {
                     Log.Error("expIcon was null in UpdateIcon");
                     return;
                 }
-                expIcon.SetShortName(data.label);
+                expIcon.SetShortName("<color=white>" + data.label);
                 expIcon.transform.localPosition = new UnityEngine.Vector3(data.buttonPos.x, data.buttonPos.y, data.buttonPos.z);
                 if (data.changeScale)
                 {
@@ -204,6 +211,7 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_colorUnlocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorStory = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorLocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a * 0.66f);
+                expIcon.SetBorderColor(new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a));
                 expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
                 expIcon.m_artifactHeatText.text = data.heatText;
                 expIcon.m_statusText.transform.localPosition = new UnityEngine.Vector3(data.statusPos.x, data.statusPos.y, data.statusPos.z);
@@ -212,7 +220,55 @@ namespace ExtraRundownCustomization.Handlers
                     expIcon.m_decryptErrorText.gameObject.SetActive(true);
                     expIcon.m_decryptErrorText.text = data.decryptText;
                 }
+                if (expIcon._Status_k__BackingField == eExpeditionIconStatus.TierLocked && expIcon.Accessibility == eExpeditionAccessibility.UnlockedByExpedition)
+                {
+                    expIcon.SetUnlockedByText();
+                }
+                expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
+                if (m_hasLocalProg)
+                {
+                    //TODO: Redo this awful spaghetti mess of code
+                    var rundownID = LocalProgressionManager.Current.ActiveRundownID();
+                    var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
+                    UnityEngine.Color BORDER_COLOR = new(0f, 1f, 246f / 255f, 0.5f);
+                    if (expIcon.transform.childCount > 1)
+                    {
+                        //Log.Info("box was already created");
+                        SpriteRenderer[] boxSprites2 = [expIcon.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>(), expIcon.transform.GetChild(1).GetChild(1).GetComponent<SpriteRenderer>(), expIcon.transform.GetChild(1).GetChild(2).GetComponent<SpriteRenderer>(), expIcon.transform.GetChild(1).GetChild(3).GetComponent<SpriteRenderer>()];
+                        foreach (var sprite in boxSprites2)
+                        {
+                            if (lpData.NoBoosterAllClearCount <= 0)
+                            {
+                                //Log.Info("No omnipotent detected");
+                                sprite.color = new UnityEngine.Color(0, 0, 0, 0);
+                            }
+                            else
+                            {
+                                sprite.color = BORDER_COLOR;
+                            }
+                        }
+                        return;
+                    }
+                    //Log.Info("Adding omnipotence box");
+                    Transform box = expIcon.transform.GetChild(0).GetChild(1);
+                    GameObject newBox = GameObject.Instantiate(box.gameObject, expIcon.transform);
+                    newBox.transform.localPosition = new UnityEngine.Vector3(-3, 0, 0);
+                    newBox.transform.localScale = new UnityEngine.Vector3(0.97f, 0.97f, 0.97f);
+                    SpriteRenderer[] boxSprites = [newBox.transform.GetChild(0).GetComponent<SpriteRenderer>(), newBox.transform.GetChild(1).GetComponent<SpriteRenderer>(), newBox.transform.GetChild(2).GetComponent<SpriteRenderer>(), newBox.transform.GetChild(3).GetComponent<SpriteRenderer>()];
+                    if (lpData.NoBoosterAllClearCount <= 0)
+                    {
+                        foreach (var sprite in boxSprites)
+                        {
+                            sprite.color = new UnityEngine.Color(0, 0, 0, 0);
+                        }
+                        return;
+                    }
+                    foreach (var sprite in boxSprites)
+                    {
+                        sprite.color = BORDER_COLOR;
+                    }
+                }
                 //Log.Info("Updated Icon");
             }
 
@@ -225,16 +281,20 @@ namespace ExtraRundownCustomization.Handlers
                 }
                 if (!data.Enabled)
                 {
-                    Log.Info("Data segment was disabled returning;");
+                    //Log.Info("Data segment was disabled returning;");
                     return;
                 }
 
                 index = 0;
-                if (data.Tier1 != null || data.Tier1.Length <= 0)
+                if (data.Tier1 != null)
                 {
                     foreach (var tier1 in data.Tier1)
                     {
-                        if (m_rundownInstance.m_expIconsTier1 == null || m_rundownInstance.m_expIconsTier1.Count < 1)
+                        if (m_rundownInstance.m_expIconsTier1 == null)
+                        {
+                            break;
+                        }
+                        if (m_rundownInstance.m_expIconsTier1.Count <= index)
                         {
                             break;
                         }
@@ -243,11 +303,15 @@ namespace ExtraRundownCustomization.Handlers
                 }
 
                 index = 0;
-                if (data.Tier2 != null || data.Tier2.Length <= 0)
+                if (data.Tier2 != null)
                 {
                     foreach (var tier2 in data.Tier2)
                     {
-                        if (m_rundownInstance.m_expIconsTier2 == null || m_rundownInstance.m_expIconsTier2.Count < 1)
+                        if (m_rundownInstance.m_expIconsTier2 == null)
+                        {
+                            break;
+                        }
+                        if (m_rundownInstance.m_expIconsTier2.Count <= index)
                         {
                             break;
                         }
@@ -256,11 +320,15 @@ namespace ExtraRundownCustomization.Handlers
                 }
 
                 index = 0;
-                if (data.Tier3 != null || data.Tier3.Length <= 0)
+                if (data.Tier3 != null)
                 {
                     foreach (var tier3 in data.Tier3)
                     {
-                        if (m_rundownInstance.m_expIconsTier3 == null || m_rundownInstance.m_expIconsTier3.Count < 1)
+                        if (m_rundownInstance.m_expIconsTier3 == null)
+                        {
+                            break;
+                        }
+                        if (m_rundownInstance.m_expIconsTier3.Count <= index)
                         {
                             break;
                         }
@@ -269,11 +337,15 @@ namespace ExtraRundownCustomization.Handlers
                 }
 
                 index = 0;
-                if (data.Tier4 != null || data.Tier4.Length <= 0)
+                if (data.Tier4 != null)
                 {
                     foreach (var tier4 in data.Tier4)
                     {
-                        if (m_rundownInstance.m_expIconsTier4 == null || m_rundownInstance.m_expIconsTier4.Count < 1)
+                        if (m_rundownInstance.m_expIconsTier4 == null)
+                        {
+                            break;
+                        }
+                        if (m_rundownInstance.m_expIconsTier4.Count !>= 0)
                         {
                             break;
                         }
@@ -282,11 +354,15 @@ namespace ExtraRundownCustomization.Handlers
                 }
 
                 index = 0;
-                if (data.Tier5 != null || data.Tier5.Length <= 0)
+                if (data.Tier5 != null)
                 {
                     foreach (var tier5 in data.Tier5)
                     {
-                        if (m_rundownInstance.m_expIconsTier5 == null || m_rundownInstance.m_expIconsTier5.Count < 1)
+                        if (m_rundownInstance.m_expIconsTier5 == null)
+                        {
+                            break;
+                        }
+                        if (m_rundownInstance.m_expIconsTier5.Count !>= 0)
                         {
                             break;
                         }
@@ -351,23 +427,31 @@ namespace ExtraRundownCustomization.Handlers
                 return;
             }
 
-
-            if (HasSelectedRundown)
+            if (m_rundownInstance.m_rundownIsRevealed)
             {
+                foreach (var obj in m_rundownInstance.m_rundownSelections)
+                {
+                    obj.gameObject.SetActive(false);
+                }
                 m_rundownInstance.m_tierMarker1.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker1.m_header.text = m_activeMiscRundownData.Tier1Text;
+                m_rundownInstance.m_tierMarker1.m_header.color = new UnityEngine.Color(0.5189f, 0.5189f, 0.5189f, 0.2745f);
                 m_rundownInstance.m_tierMarker2.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker2.m_header.text = m_activeMiscRundownData.Tier2Text;
                 m_rundownInstance.m_tierMarker3.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker3.m_header.text = m_activeMiscRundownData.Tier3Text;
                 m_rundownInstance.m_tierMarker4.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker4.m_header.text = m_activeMiscRundownData.Tier4Text;
                 m_rundownInstance.m_tierMarker5.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker5.m_header.text = m_activeMiscRundownData.Tier5Text;
+
+                if (m_activeMiscRundownData.OverrideTierMarkerText)
+                {
+                    m_rundownInstance.m_tierMarker1.m_header.text = m_activeMiscRundownData.Tier1Text;
+                    m_rundownInstance.m_tierMarker2.m_header.text = m_activeMiscRundownData.Tier2Text;
+                    m_rundownInstance.m_tierMarker3.m_header.text = m_activeMiscRundownData.Tier3Text;
+                    m_rundownInstance.m_tierMarker4.m_header.text = m_activeMiscRundownData.Tier4Text;
+                    m_rundownInstance.m_tierMarker5.m_header.text = m_activeMiscRundownData.Tier5Text;
+                }
 
                 if (m_activeMiscRundownData.EnableERCDataReload)
                 {
-                    m_rundownInstance.m_matchmakeAllButton.gameObject.transform.position = new UnityEngine.Vector3(0, 210, 0);
+                    m_rundownInstance.m_matchmakeAllButton.gameObject.transform.localPosition = new UnityEngine.Vector3(0, 210, 0);
                     AddReloadButton();
                 }
 
@@ -379,6 +463,16 @@ namespace ExtraRundownCustomization.Handlers
                 m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(1).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
                 m_rundownInstance.m_rundownIntelButton.gameObject.SetActive(m_activeMiscRundownData.EnableIntelButton);
                 m_rundownInstance.m_rundownIntelButton.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.IntelButtonPosition.x, m_activeMiscRundownData.IntelButtonPosition.y, m_activeMiscRundownData.IntelButtonPosition.z);
+                if (!m_activeMiscRundownData.EnableSectorSummary)
+                {
+                    m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(90000, 0, 0);
+                }
+                else
+                {
+                    m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.SectorSummaryPosition.x, m_activeMiscRundownData.SectorSummaryPosition.y, m_activeMiscRundownData.SectorSummaryPosition.z);
+                    m_rundownInstance.m_tierMarkerSectorSummary.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
+                }
+
             }
 
 
