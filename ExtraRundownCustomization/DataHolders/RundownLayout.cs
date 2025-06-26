@@ -4,7 +4,6 @@
     public class RundownLayout
     {
         public bool Enabled { get; set; } = false;
-        public bool IsSingleRundown { get; set; } = false;
         public IndividualRundownLayout R1 { get; set; } = new IndividualRundownLayout()
         {
             Enabled = false,

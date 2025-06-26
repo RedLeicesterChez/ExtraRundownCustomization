@@ -32,8 +32,10 @@ namespace ExtraRundownCustomization.Patches
         {
             public static void Postfix(CM_PageRundown_New __instance)
             {
-                __instance.m_textRundownHeaderTop.text = RundownMenuHandlers.m_activeRundownSelectionData.TextHeaderTop;
-                
+                if (__instance.m_currentRundownData == null)
+                {
+                    __instance.m_textRundownHeaderTop.text = RundownMenuHandlers.m_activeRundownSelectionData.TextHeaderTop;
+                }
             }
         }
 
@@ -135,6 +137,7 @@ namespace ExtraRundownCustomization.Patches
 
                 RundownMenuHandlers.m_rundownInstance = __instance;
                 RundownMenuHandlers.UpdateRundownSelections();
+                RundownMenuHandlers.SetupRundownFeatures();
             }
         }
 

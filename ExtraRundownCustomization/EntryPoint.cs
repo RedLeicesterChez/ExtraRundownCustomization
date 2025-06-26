@@ -7,6 +7,7 @@ using ExtraRundownCustomization.Utils;
 namespace ExtraRundownCustomization
 {
     [BepInDependency("com.dak.MTFO", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("Inas.LocalProgression", BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin("RLC.ExtraRundownCustomization", "ExtraRundownCustomization", "1.0.0")]
     internal class EntryPoint : BasePlugin
     {
@@ -16,6 +17,7 @@ namespace ExtraRundownCustomization
             JsonHandler.SetupJson();
 
             var lpGUID = "Inas.LocalProgression";
+            //This was here to make localprog optional but i can't be bothered to do that anymore
             if (IL2CPPChainloader.Instance.Plugins.TryGetValue(lpGUID, out var info))
             {
                 Log.LogInfo("LocalProgression detected");

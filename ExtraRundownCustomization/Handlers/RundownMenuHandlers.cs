@@ -75,14 +75,15 @@ namespace ExtraRundownCustomization.Handlers
                 //Log.Info("Adding GO to the list GO name: " + __instance.m_rundownHolder.GetChild(16).GetChild(i).gameObject.name);
             }
 
-            __instance.m_textRundownHeader.text = m_activeRundownSelectionData.TextHeader;
-            __instance.m_textRundownHeaderTop.text = m_activeRundownSelectionData.TextHeaderTop;
-
-            if (m_activeGlobalRundownLayoutData.IsSingleRundown)
+            if (m_rundownInstance.m_currentRundownData != null)
             {
                 m_rundownInstance.m_textRundownHeaderTop.gameObject.SetActive(true);
-                __instance.m_textRundownHeaderTop.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
+                __instance.m_textRundownHeaderTop.text = "<color=white><size=300%>" + m_rundownInstance.m_currentRundownData.StorytellingData.Title;
+                return;
             }
+
+            __instance.m_textRundownHeader.text = m_activeRundownSelectionData.TextHeader;
+            __instance.m_textRundownHeaderTop.text = m_activeRundownSelectionData.TextHeaderTop;
 
             if (__instance.m_rundownIsRevealed)
             {
@@ -190,8 +191,7 @@ namespace ExtraRundownCustomization.Handlers
                 return;
             }
 
-            m_rundownInstance.m_textRundownHeader.text = m_activeRundownSelectionData.TextHeader;
-            m_rundownInstance.m_textRundownHeaderTop.text = m_activeRundownSelectionData.TextHeaderTop;
+            m_rundownInstance.m_textRundownHeader.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
 
             int index;
             void UpdateIcon(CM_ExpeditionIcon_New expIcon, ExpeditionButton data)
@@ -226,21 +226,20 @@ namespace ExtraRundownCustomization.Handlers
                 }
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
+
                 if (m_hasLocalProg)
                 {
-                    //TODO: Redo this awful spaghetti mess of code
                     var rundownID = LocalProgressionManager.Current.ActiveRundownID();
                     var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
                     UnityEngine.Color BORDER_COLOR = new(0f, 1f, 246f / 255f, 0.5f);
+
                     if (expIcon.transform.childCount > 1)
                     {
-                        //Log.Info("box was already created");
-                        SpriteRenderer[] boxSprites2 = [expIcon.transform.GetChild(1).GetChild(0).GetComponent<SpriteRenderer>(), expIcon.transform.GetChild(1).GetChild(1).GetComponent<SpriteRenderer>(), expIcon.transform.GetChild(1).GetChild(2).GetComponent<SpriteRenderer>(), expIcon.transform.GetChild(1).GetChild(3).GetComponent<SpriteRenderer>()];
+                        SpriteRenderer[] boxSprites2 = expIcon.transform.GetChild(1).GetComponentsInChildren<SpriteRenderer>();
                         foreach (var sprite in boxSprites2)
                         {
                             if (lpData.NoBoosterAllClearCount <= 0)
                             {
-                                //Log.Info("No omnipotent detected");
                                 sprite.color = new UnityEngine.Color(0, 0, 0, 0);
                             }
                             else
@@ -250,23 +249,21 @@ namespace ExtraRundownCustomization.Handlers
                         }
                         return;
                     }
-                    //Log.Info("Adding omnipotence box");
-                    Transform box = expIcon.transform.GetChild(0).GetChild(1);
-                    GameObject newBox = GameObject.Instantiate(box.gameObject, expIcon.transform);
+
+                    GameObject newBox = GameObject.Instantiate(expIcon.transform.GetChild(0).GetChild(1).gameObject, expIcon.transform);
                     newBox.transform.localPosition = new UnityEngine.Vector3(-3, 0, 0);
                     newBox.transform.localScale = new UnityEngine.Vector3(0.97f, 0.97f, 0.97f);
-                    SpriteRenderer[] boxSprites = [newBox.transform.GetChild(0).GetComponent<SpriteRenderer>(), newBox.transform.GetChild(1).GetComponent<SpriteRenderer>(), newBox.transform.GetChild(2).GetComponent<SpriteRenderer>(), newBox.transform.GetChild(3).GetComponent<SpriteRenderer>()];
-                    if (lpData.NoBoosterAllClearCount <= 0)
+                    SpriteRenderer[] boxSprites = newBox.GetComponentsInChildren<SpriteRenderer>();
+                    foreach (var sprite in boxSprites)
                     {
-                        foreach (var sprite in boxSprites)
+                        if (lpData.NoBoosterAllClearCount <= 0)
                         {
                             sprite.color = new UnityEngine.Color(0, 0, 0, 0);
                         }
-                        return;
-                    }
-                    foreach (var sprite in boxSprites)
-                    {
-                        sprite.color = BORDER_COLOR;
+                        else
+                        {
+                            sprite.color = BORDER_COLOR;
+                        }
                     }
                 }
                 //Log.Info("Updated Icon");
@@ -345,7 +342,7 @@ namespace ExtraRundownCustomization.Handlers
                         {
                             break;
                         }
-                        if (m_rundownInstance.m_expIconsTier4.Count !>= 0)
+                        if (m_rundownInstance.m_expIconsTier4.Count! >= 0)
                         {
                             break;
                         }
@@ -362,7 +359,7 @@ namespace ExtraRundownCustomization.Handlers
                         {
                             break;
                         }
-                        if (m_rundownInstance.m_expIconsTier5.Count !>= 0)
+                        if (m_rundownInstance.m_expIconsTier5.Count! >= 0)
                         {
                             break;
                         }
@@ -370,7 +367,7 @@ namespace ExtraRundownCustomization.Handlers
                     }
                 }
             }
-            
+
             //Can't use a fucking switch :angry:
             if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R1.RundownDatablockID)
             {
@@ -427,28 +424,81 @@ namespace ExtraRundownCustomization.Handlers
                 return;
             }
 
+            m_rundownInstance.m_buttonVanityItemDrops.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
+            m_rundownInstance.m_buttonVanityItemDrops.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableVanityPage;
+            m_rundownInstance.m_buttonVanityItemDrops.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableVanityPage;
+            m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
+            m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(1).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
+
+            if (!m_activeMiscRundownData.EnableSectorSummary)
+            {
+                m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(90000, 0, 0);
+            }
+            else
+            {
+                m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.SectorSummaryPosition.x, m_activeMiscRundownData.SectorSummaryPosition.y, m_activeMiscRundownData.SectorSummaryPosition.z);
+                m_rundownInstance.m_tierMarkerSectorSummary.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
+            }
+
             if (m_rundownInstance.m_rundownIsRevealed)
             {
                 foreach (var obj in m_rundownInstance.m_rundownSelections)
                 {
                     obj.gameObject.SetActive(false);
                 }
-                m_rundownInstance.m_tierMarker1.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker1.m_header.color = new UnityEngine.Color(0.5189f, 0.5189f, 0.5189f, 0.2745f);
-                m_rundownInstance.m_tierMarker2.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker3.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker4.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
-                m_rundownInstance.m_tierMarker5.gameObject.SetActive(m_activeMiscRundownData.EnableR5TierMarkers);
 
                 if (m_activeMiscRundownData.OverrideTierMarkerText)
                 {
-                    m_rundownInstance.m_tierMarker1.m_header.text = m_activeMiscRundownData.Tier1Text;
-                    m_rundownInstance.m_tierMarker2.m_header.text = m_activeMiscRundownData.Tier2Text;
-                    m_rundownInstance.m_tierMarker3.m_header.text = m_activeMiscRundownData.Tier3Text;
-                    m_rundownInstance.m_tierMarker4.m_header.text = m_activeMiscRundownData.Tier4Text;
-                    m_rundownInstance.m_tierMarker5.m_header.text = m_activeMiscRundownData.Tier5Text;
+                    //This shit is disgusting but as long as it stops localprog from FUCKING UP MY TIER MARKERS im fine with it
+                    if (m_hasLocalProg)
+                    {
+                        if (customTierMarker1 == null)
+                        {
+                            SetupRundownFeatures();
+                        }
+                        customTierMarker1.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                        customTierMarker2.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                        customTierMarker3.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                        customTierMarker4.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                        customTierMarker5.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                        CM_RundownTierMarker tierMarker1 = customTierMarker1.GetComponent<CM_RundownTierMarker>();
+                        CM_RundownTierMarker tierMarker2 = customTierMarker2.GetComponent<CM_RundownTierMarker>();
+                        CM_RundownTierMarker tierMarker3 = customTierMarker3.GetComponent<CM_RundownTierMarker>();
+                        CM_RundownTierMarker tierMarker4 = customTierMarker4.GetComponent<CM_RundownTierMarker>();
+                        CM_RundownTierMarker tierMarker5 = customTierMarker5.GetComponent<CM_RundownTierMarker>();
+                        tierMarker1.m_header.text = m_activeMiscRundownData.Tier1Text;
+                        tierMarker2.m_header.text = m_activeMiscRundownData.Tier2Text;
+                        tierMarker3.m_header.text = m_activeMiscRundownData.Tier3Text;
+                        tierMarker4.m_header.text = m_activeMiscRundownData.Tier4Text;
+                        tierMarker5.m_header.text = m_activeMiscRundownData.Tier5Text;
+                        customTierMarker1.transform.localPosition = new UnityEngine.Vector3(0, -205, 0);
+                        customTierMarker2.transform.localPosition = new UnityEngine.Vector3(0, -435, 0);
+                        customTierMarker3.transform.localPosition = new UnityEngine.Vector3(0, -665, 0);
+                        customTierMarker4.transform.localPosition = new UnityEngine.Vector3(0, -895, 0);
+                        customTierMarker5.transform.localPosition = new UnityEngine.Vector3(0, -1125, 0);
+                        customTierMarker1.SetActive(true);
+                        customTierMarker2.SetActive(true);
+                        customTierMarker3.SetActive(true);
+                        customTierMarker4.SetActive(true);
+                        customTierMarker5.SetActive(true);
+
+                        m_rundownInstance.m_tierMarker1.gameObject.SetActive(false);
+                        m_rundownInstance.m_tierMarker2.gameObject.SetActive(false);
+                        m_rundownInstance.m_tierMarker3.gameObject.SetActive(false);
+                        m_rundownInstance.m_tierMarker4.gameObject.SetActive(false);
+                        m_rundownInstance.m_tierMarker5.gameObject.SetActive(false);
+                        goto killme;
+                    }
                 }
 
+                m_rundownInstance.m_tierMarker1.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
+                m_rundownInstance.m_tierMarker1.m_header.color = new UnityEngine.Color(0.5189f, 0.5189f, 0.5189f, 0.2745f);
+                m_rundownInstance.m_tierMarker2.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
+                m_rundownInstance.m_tierMarker3.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
+                m_rundownInstance.m_tierMarker4.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
+                m_rundownInstance.m_tierMarker5.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
+
+                killme:
                 if (m_activeMiscRundownData.EnableERCDataReload)
                 {
                     m_rundownInstance.m_matchmakeAllButton.gameObject.transform.localPosition = new UnityEngine.Vector3(0, 210, 0);
@@ -456,27 +506,10 @@ namespace ExtraRundownCustomization.Handlers
                 }
 
                 m_rundownInstance.transform.GetChild(2).GetChild(4).GetChild(18).gameObject.SetActive(false);
-                m_rundownInstance.m_buttonVanityItemDrops.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
-                m_rundownInstance.m_buttonVanityItemDrops.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableVanityPage;
-                m_rundownInstance.m_buttonVanityItemDrops.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableVanityPage;
-                m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
-                m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(1).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
                 m_rundownInstance.m_rundownIntelButton.gameObject.SetActive(m_activeMiscRundownData.EnableIntelButton);
                 m_rundownInstance.m_rundownIntelButton.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.IntelButtonPosition.x, m_activeMiscRundownData.IntelButtonPosition.y, m_activeMiscRundownData.IntelButtonPosition.z);
-                if (!m_activeMiscRundownData.EnableSectorSummary)
-                {
-                    m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(90000, 0, 0);
-                }
-                else
-                {
-                    m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.SectorSummaryPosition.x, m_activeMiscRundownData.SectorSummaryPosition.y, m_activeMiscRundownData.SectorSummaryPosition.z);
-                    m_rundownInstance.m_tierMarkerSectorSummary.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
-                }
 
             }
-
-
-
 
             m_rundownInstance.m_matchmakeAllButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableMatchmakingButton);
             m_rundownInstance.m_matchmakeAllButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
@@ -507,6 +540,26 @@ namespace ExtraRundownCustomization.Handlers
             {
                 __instance.m_watermarkText.text = m_activeWatermarkData.Text;
             }
+        }
+
+        private static GameObject customTierMarker1;
+        private static GameObject customTierMarker2;
+        private static GameObject customTierMarker3;
+        private static GameObject customTierMarker4;
+        private static GameObject customTierMarker5;
+
+        public static void SetupRundownFeatures()
+        {
+            customTierMarker1 = GameObject.Instantiate(m_rundownInstance.m_tierMarkerPrefab, m_rundownInstance.m_rundownHolder);
+            customTierMarker2 = GameObject.Instantiate(m_rundownInstance.m_tierMarkerPrefab, m_rundownInstance.m_rundownHolder);
+            customTierMarker3 = GameObject.Instantiate(m_rundownInstance.m_tierMarkerPrefab, m_rundownInstance.m_rundownHolder);
+            customTierMarker4 = GameObject.Instantiate(m_rundownInstance.m_tierMarkerPrefab, m_rundownInstance.m_rundownHolder);
+            customTierMarker5 = GameObject.Instantiate(m_rundownInstance.m_tierMarkerPrefab, m_rundownInstance.m_rundownHolder);
+            customTierMarker1.SetActive(false);
+            customTierMarker2.SetActive(false);
+            customTierMarker3.SetActive(false);
+            customTierMarker4.SetActive(false);
+            customTierMarker5.SetActive(false);
         }
     }
 }
