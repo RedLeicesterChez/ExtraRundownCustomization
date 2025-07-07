@@ -76,7 +76,6 @@ namespace ExtraRundownCustomization.Handlers
 
             if (m_rundownInstance.m_currentRundownData != null)
             {
-                m_rundownInstance.m_textRundownHeaderTop.gameObject.SetActive(true);
                 __instance.m_textRundownHeaderTop.text = "<color=white><size=300%>" + m_rundownInstance.m_currentRundownData.StorytellingData.Title;
                 return;
             }

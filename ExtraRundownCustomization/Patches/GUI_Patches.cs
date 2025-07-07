@@ -36,10 +36,14 @@ namespace ExtraRundownCustomization.Patches
                 {
                     __instance.m_textRundownHeaderTop.text = RundownMenuHandlers.m_activeRundownSelectionData.TextHeaderTop;
                 }
+                if (__instance.m_buttonConnect.gameObject.active)
+                {
+                    __instance.m_textRundownHeaderTop.gameObject.SetActive(true);
+                }
             }
         }
 
-        [HarmonyPatch(typeof(CM_PageRundown_New), "ResetRundownSelection")]
+            [HarmonyPatch(typeof(CM_PageRundown_New), "ResetRundownSelection")]
         private class Patch_CM_PageRundown_New_ResetRundownSelection
         {
             public static void Postfix()
