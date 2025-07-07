@@ -20,7 +20,6 @@ namespace ExtraRundownCustomization.Handlers
         public static CM_PageRundown_New m_rundownInstance;
         public static PUI_Watermark m_watermarkInstance;
 
-        public static bool m_hasLocalProg = false;
         public static void UpdateAll()
         {
             UpdateRundownSelections();
@@ -162,19 +161,19 @@ namespace ExtraRundownCustomization.Handlers
                     break;
                 }
             }
-        }
 
-        private static void UpdateRundownSelector(GameObject obj, RundownSelector data)
-        {
-            obj.transform.localPosition = new UnityEngine.Vector3(data.pos.x, data.pos.y, data.pos.z);
-            obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(data.rot.x, data.rot.y, data.rot.z));
-            obj.transform.localScale = new UnityEngine.Vector3(data.scale.x, data.scale.y, data.scale.z);
+            void UpdateRundownSelector(GameObject obj, RundownSelector data)
+            {
+                obj.transform.localPosition = new UnityEngine.Vector3(data.pos.x, data.pos.y, data.pos.z);
+                obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(data.rot.x, data.rot.y, data.rot.z));
+                obj.transform.localScale = new UnityEngine.Vector3(data.scale.x, data.scale.y, data.scale.z);
 
-            var comp = obj.GetComponent<CM_RundownSelection>();
-            comp.m_rundownText.text = data.name;
-            comp.m_altText.text = data.altText;
-            comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(data.namePos.x, data.namePos.y, data.namePos.z);
-            comp.m_altText.transform.localPosition = new UnityEngine.Vector3(data.altTextPos.x, data.altTextPos.y, data.altTextPos.z);
+                var comp = obj.GetComponent<CM_RundownSelection>();
+                comp.m_rundownText.text = data.name;
+                comp.m_altText.text = data.altText;
+                comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(data.namePos.x, data.namePos.y, data.namePos.z);
+                comp.m_altText.transform.localPosition = new UnityEngine.Vector3(data.altTextPos.x, data.altTextPos.y, data.altTextPos.z);
+            }
         }
 
         public static void UpdateExpeditionIcons()
@@ -227,34 +226,14 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
 
-                if (m_hasLocalProg)
+                var rundownID = LocalProgressionManager.Current.ActiveRundownID();
+                var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
+                UnityEngine.Color BORDER_COLOR = new(0f, 1f, 246f / 255f, 0.5f);
+
+                if (expIcon.transform.childCount > 1)
                 {
-                    var rundownID = LocalProgressionManager.Current.ActiveRundownID();
-                    var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
-                    UnityEngine.Color BORDER_COLOR = new(0f, 1f, 246f / 255f, 0.5f);
-
-                    if (expIcon.transform.childCount > 1)
-                    {
-                        SpriteRenderer[] boxSprites2 = expIcon.transform.GetChild(1).GetComponentsInChildren<SpriteRenderer>();
-                        foreach (var sprite in boxSprites2)
-                        {
-                            if (lpData.NoBoosterAllClearCount <= 0)
-                            {
-                                sprite.color = new UnityEngine.Color(0, 0, 0, 0);
-                            }
-                            else
-                            {
-                                sprite.color = BORDER_COLOR;
-                            }
-                        }
-                        return;
-                    }
-
-                    GameObject newBox = GameObject.Instantiate(expIcon.transform.GetChild(0).GetChild(1).gameObject, expIcon.transform);
-                    newBox.transform.localPosition = new UnityEngine.Vector3(-3, 0, 0);
-                    newBox.transform.localScale = new UnityEngine.Vector3(0.97f, 0.97f, 0.97f);
-                    SpriteRenderer[] boxSprites = newBox.GetComponentsInChildren<SpriteRenderer>();
-                    foreach (var sprite in boxSprites)
+                    SpriteRenderer[] boxSprites2 = expIcon.transform.GetChild(1).GetComponentsInChildren<SpriteRenderer>();
+                    foreach (var sprite in boxSprites2)
                     {
                         if (lpData.NoBoosterAllClearCount <= 0)
                         {
@@ -264,6 +243,23 @@ namespace ExtraRundownCustomization.Handlers
                         {
                             sprite.color = BORDER_COLOR;
                         }
+                    }
+                    return;
+                }
+
+                GameObject newBox = GameObject.Instantiate(expIcon.transform.GetChild(0).GetChild(1).gameObject, expIcon.transform);
+                newBox.transform.localPosition = new UnityEngine.Vector3(-3, 0, 0);
+                newBox.transform.localScale = new UnityEngine.Vector3(0.97f, 0.97f, 0.97f);
+                SpriteRenderer[] boxSprites = newBox.GetComponentsInChildren<SpriteRenderer>();
+                foreach (var sprite in boxSprites)
+                {
+                    if (lpData.NoBoosterAllClearCount <= 0)
+                    {
+                        sprite.color = new UnityEngine.Color(0, 0, 0, 0);
+                    }
+                    else
+                    {
+                        sprite.color = BORDER_COLOR;
                     }
                 }
                 //Log.Info("Updated Icon");
@@ -342,7 +338,7 @@ namespace ExtraRundownCustomization.Handlers
                         {
                             break;
                         }
-                        if (m_rundownInstance.m_expIconsTier4.Count! >= 0)
+                        if (m_rundownInstance.m_expIconsTier4.Count! <= 0)
                         {
                             break;
                         }
@@ -359,12 +355,21 @@ namespace ExtraRundownCustomization.Handlers
                         {
                             break;
                         }
-                        if (m_rundownInstance.m_expIconsTier5.Count! >= 0)
+                        if (m_rundownInstance.m_expIconsTier5.Count! <= 0)
                         {
                             break;
                         }
                         UpdateIcon(m_rundownInstance.m_expIconsTier5[index], tier5);
                     }
+                }
+
+                if (m_rundownInstance.m_guix_Tier2.gameObject.active)
+                {
+                    GameObject extPage = m_rundownInstance.m_guix_Ext.gameObject;
+                    extPage.SetActive(data.EnableExtensionPage);
+                    extPage.transform.localPosition = new UnityEngine.Vector3(data.ExtensionPagePos.x, data.ExtensionPagePos.y, data.ExtensionPagePos.z);
+                    extPage.transform.localScale = new UnityEngine.Vector3(0.85f, 0.85f, 0.85f);
+                    m_rundownInstance.m_externalExpHeader.text = data.ExtensionPageText;
                 }
             }
 
@@ -449,46 +454,42 @@ namespace ExtraRundownCustomization.Handlers
 
                 if (m_activeMiscRundownData.OverrideTierMarkerText)
                 {
-                    //This shit is disgusting but as long as it stops localprog from FUCKING UP MY TIER MARKERS im fine with it
-                    if (m_hasLocalProg)
+                    if (customTierMarker1 == null)
                     {
-                        if (customTierMarker1 == null)
-                        {
-                            SetupRundownFeatures();
-                        }
-                        customTierMarker1.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
-                        customTierMarker2.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
-                        customTierMarker3.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
-                        customTierMarker4.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
-                        customTierMarker5.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
-                        CM_RundownTierMarker tierMarker1 = customTierMarker1.GetComponent<CM_RundownTierMarker>();
-                        CM_RundownTierMarker tierMarker2 = customTierMarker2.GetComponent<CM_RundownTierMarker>();
-                        CM_RundownTierMarker tierMarker3 = customTierMarker3.GetComponent<CM_RundownTierMarker>();
-                        CM_RundownTierMarker tierMarker4 = customTierMarker4.GetComponent<CM_RundownTierMarker>();
-                        CM_RundownTierMarker tierMarker5 = customTierMarker5.GetComponent<CM_RundownTierMarker>();
-                        tierMarker1.m_header.text = m_activeMiscRundownData.Tier1Text;
-                        tierMarker2.m_header.text = m_activeMiscRundownData.Tier2Text;
-                        tierMarker3.m_header.text = m_activeMiscRundownData.Tier3Text;
-                        tierMarker4.m_header.text = m_activeMiscRundownData.Tier4Text;
-                        tierMarker5.m_header.text = m_activeMiscRundownData.Tier5Text;
-                        customTierMarker1.transform.localPosition = new UnityEngine.Vector3(0, -205, 0);
-                        customTierMarker2.transform.localPosition = new UnityEngine.Vector3(0, -435, 0);
-                        customTierMarker3.transform.localPosition = new UnityEngine.Vector3(0, -665, 0);
-                        customTierMarker4.transform.localPosition = new UnityEngine.Vector3(0, -895, 0);
-                        customTierMarker5.transform.localPosition = new UnityEngine.Vector3(0, -1125, 0);
-                        customTierMarker1.SetActive(true);
-                        customTierMarker2.SetActive(true);
-                        customTierMarker3.SetActive(true);
-                        customTierMarker4.SetActive(true);
-                        customTierMarker5.SetActive(true);
-
-                        m_rundownInstance.m_tierMarker1.gameObject.SetActive(false);
-                        m_rundownInstance.m_tierMarker2.gameObject.SetActive(false);
-                        m_rundownInstance.m_tierMarker3.gameObject.SetActive(false);
-                        m_rundownInstance.m_tierMarker4.gameObject.SetActive(false);
-                        m_rundownInstance.m_tierMarker5.gameObject.SetActive(false);
-                        goto killme;
+                        SetupRundownFeatures();
                     }
+                    customTierMarker1.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                    customTierMarker2.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                    customTierMarker3.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                    customTierMarker4.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                    customTierMarker5.transform.SetSiblingIndex(m_rundownInstance.m_rundownHolder.childCount - 1);
+                    CM_RundownTierMarker tierMarker1 = customTierMarker1.GetComponent<CM_RundownTierMarker>();
+                    CM_RundownTierMarker tierMarker2 = customTierMarker2.GetComponent<CM_RundownTierMarker>();
+                    CM_RundownTierMarker tierMarker3 = customTierMarker3.GetComponent<CM_RundownTierMarker>();
+                    CM_RundownTierMarker tierMarker4 = customTierMarker4.GetComponent<CM_RundownTierMarker>();
+                    CM_RundownTierMarker tierMarker5 = customTierMarker5.GetComponent<CM_RundownTierMarker>();
+                    tierMarker1.m_header.text = m_activeMiscRundownData.Tier1Text;
+                    tierMarker2.m_header.text = m_activeMiscRundownData.Tier2Text;
+                    tierMarker3.m_header.text = m_activeMiscRundownData.Tier3Text;
+                    tierMarker4.m_header.text = m_activeMiscRundownData.Tier4Text;
+                    tierMarker5.m_header.text = m_activeMiscRundownData.Tier5Text;
+                    customTierMarker1.transform.localPosition = new UnityEngine.Vector3(0, -205, 0);
+                    customTierMarker2.transform.localPosition = new UnityEngine.Vector3(0, -435, 0);
+                    customTierMarker3.transform.localPosition = new UnityEngine.Vector3(0, -665, 0);
+                    customTierMarker4.transform.localPosition = new UnityEngine.Vector3(0, -895, 0);
+                    customTierMarker5.transform.localPosition = new UnityEngine.Vector3(0, -1125, 0);
+                    customTierMarker1.SetActive(true);
+                    customTierMarker2.SetActive(true);
+                    customTierMarker3.SetActive(true);
+                    customTierMarker4.SetActive(true);
+                    customTierMarker5.SetActive(true);
+
+                    m_rundownInstance.m_tierMarker1.gameObject.SetActive(false);
+                    m_rundownInstance.m_tierMarker2.gameObject.SetActive(false);
+                    m_rundownInstance.m_tierMarker3.gameObject.SetActive(false);
+                    m_rundownInstance.m_tierMarker4.gameObject.SetActive(false);
+                    m_rundownInstance.m_tierMarker5.gameObject.SetActive(false);
+                    goto killme;
                 }
 
                 m_rundownInstance.m_tierMarker1.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);

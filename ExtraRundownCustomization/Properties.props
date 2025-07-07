@@ -38,6 +38,7 @@
 	
 	<!-- Plugin Dependencies -->
 	<ItemGroup>
+		<Reference Include="$(PluginsFolder)\GTFO-API.dll" Private="false" />
 		<Reference Include="$(PluginsFolder)\dakkhuza-MTFO\MTFO.dll" Private="false" />
 		<Reference Include="$(PluginsFolder)\Inas07-LocalProgression\Inas07.LocalProgression.dll" Private="false" />
 	</ItemGroup>

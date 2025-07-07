@@ -352,6 +352,10 @@
         public ExpeditionButton[] Tier4 { get; set; }
 
         public ExpeditionButton[] Tier5 { get; set; }
+
+        public bool EnableExtensionPage { get; set; } = false;
+        public Vector3 ExtensionPagePos { get; set; } = new Vector3{ x = 0, y = -459, z = 0 };
+        public string ExtensionPageText { get; set; } = "<color=orange>://EXT";
     }
 
     [System.Serializable]
