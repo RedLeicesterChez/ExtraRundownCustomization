@@ -21,6 +21,8 @@ namespace ExtraRundownCustomization.Handlers
         public static CM_PageRundown_New m_rundownInstance;
         public static PUI_Watermark m_watermarkInstance;
 
+        public static bool m_popupMovementActive = false;
+
         public static void UpdateAll()
         {
             UpdateRundownSelections();
@@ -515,7 +517,7 @@ namespace ExtraRundownCustomization.Handlers
                 m_rundownInstance.m_tierMarker4.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
                 m_rundownInstance.m_tierMarker5.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
 
-                killme:
+            killme:
                 if (m_activeMiscRundownData.EnableERCDataReload)
                 {
                     m_rundownInstance.m_matchmakeAllButton.gameObject.transform.localPosition = new UnityEngine.Vector3(0, 210, 0);
@@ -579,6 +581,24 @@ namespace ExtraRundownCustomization.Handlers
             customTierMarker3.SetActive(false);
             customTierMarker4.SetActive(false);
             customTierMarker5.SetActive(false);
+        }
+
+        public static void LazyUpdate()
+        {
+            if (m_popupMovementActive)
+            {
+                foreach (CM_ExpeditionIcon_New icon in m_rundownInstance.m_expIconsAll)
+                {
+                    icon.m_collider.enabled = false;
+                }
+            }
+            else
+            {
+                foreach (CM_ExpeditionIcon_New icon in m_rundownInstance.m_expIconsAll)
+                {
+                    icon.m_collider.enabled = true;
+                }
+            }
         }
     }
 }

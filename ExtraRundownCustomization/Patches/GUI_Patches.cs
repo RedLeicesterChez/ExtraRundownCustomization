@@ -3,6 +3,8 @@ using ExtraRundownCustomization.Handlers;
 using ExtraRundownCustomization.Utils;
 using HarmonyLib;
 using System;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
+using UnityEngine;
 
 namespace ExtraRundownCustomization.Patches
 {
@@ -40,10 +42,19 @@ namespace ExtraRundownCustomization.Patches
                 {
                     __instance.m_textRundownHeaderTop.gameObject.SetActive(true);
                 }
+                if (__instance.m_popupMovement.transform.GetChild(0).gameObject.active)
+                {
+                    RundownMenuHandlers.m_popupMovementActive = true;
+                }
+                else
+                {
+                    RundownMenuHandlers.m_popupMovementActive = false;
+                }
+                RundownMenuHandlers.LazyUpdate(); //not so lazy update :(
             }
         }
 
-            [HarmonyPatch(typeof(CM_PageRundown_New), "ResetRundownSelection")]
+        [HarmonyPatch(typeof(CM_PageRundown_New), "ResetRundownSelection")]
         private class Patch_CM_PageRundown_New_ResetRundownSelection
         {
             public static void Postfix()
