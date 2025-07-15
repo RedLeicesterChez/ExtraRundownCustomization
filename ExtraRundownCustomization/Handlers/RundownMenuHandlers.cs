@@ -7,6 +7,7 @@ using LocalProgression;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using MTFO.API;
 
 namespace ExtraRundownCustomization.Handlers
 {
@@ -54,7 +55,7 @@ namespace ExtraRundownCustomization.Handlers
             //Log.Info("Updating Rundown Selections");
             if (!m_activeRundownSelectionData.Enabled)
             {
-                Log.Info("Rundown Selection data is not enabled");
+                //Log.Info("Rundown Selection data is not enabled");
                 return;
             }
             CM_PageRundown_New __instance = m_rundownInstance;
@@ -180,7 +181,7 @@ namespace ExtraRundownCustomization.Handlers
             UpdateMiscFeatures();
             if (!m_activeGlobalRundownLayoutData.Enabled)
             {
-                //Log.Info("Rundown layout update disabled");
+                //Log.Info("Rundown layout disabled");
                 return;
             }
             if (m_rundownInstance == null)
@@ -424,8 +425,24 @@ namespace ExtraRundownCustomization.Handlers
 
             if (!m_activeMiscRundownData.Enabled)
             {
-                Log.Debug("Misc rundown features not enabled");
+                //Log.Debug("Misc rundown features not enabled");
                 return;
+            }
+
+            if (MTFOHotReloadAPI.HotReloadEnabled)
+            {
+                //Log.Info("Fixing MTFO hotreload button");
+                Transform buttonMenu = m_rundownInstance.transform.GetChild(2).GetChild(3);
+
+                for (int i = 0; i < buttonMenu.childCount; i++)
+                {
+                    if (buttonMenu.GetChild(i).name == "Button HotReload")
+                    {
+                        buttonMenu.GetChild(i).GetChild(0).gameObject.SetActive(true);
+                        buttonMenu.GetChild(i).GetComponent<TextMeshPro>().enabled = true;
+                        buttonMenu.GetChild(i).GetComponent<BoxCollider2D>().enabled = true;
+                    }
+                }
             }
 
             m_rundownInstance.m_buttonVanityItemDrops.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
@@ -513,11 +530,13 @@ namespace ExtraRundownCustomization.Handlers
 
             m_rundownInstance.m_matchmakeAllButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableMatchmakingButton);
             m_rundownInstance.m_matchmakeAllButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
+            m_rundownInstance.m_matchmakeAllButton.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
 
             if (m_activeMiscRundownData.EnableERCDataReload)
             {
                 m_rundownInstance.m_matchmakeAllButton.transform.GetChild(0).gameObject.SetActive(true);
                 m_rundownInstance.m_matchmakeAllButton.GetComponent<BoxCollider2D>().enabled = true;
+                m_rundownInstance.m_matchmakeAllButton.GetComponent<TextMeshPro>().enabled = true;
                 AddReloadButton();
             }
             m_rundownInstance.m_aboutTheRundownButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableButtonAboutTheRundown);
