@@ -3,6 +3,7 @@ using BepInEx.Unity.IL2CPP;
 using ExtraRundownCustomization.Patches;
 using ExtraRundownCustomization.Utils;
 using GTFO.API;
+using HarmonyLib;
 
 namespace ExtraRundownCustomization
 {
@@ -11,9 +12,11 @@ namespace ExtraRundownCustomization
     [BepInPlugin("RLC.ExtraRundownCustomization", "ExtraRundownCustomization", "1.0.0")]
     internal class EntryPoint : BasePlugin
     {
+        private static Harmony _Harmony;
         public override void Load()
         {
-            GUI_Patches.Setup();
+            _Harmony = new Harmony($"{VersionInfo.RootNamespace}.Harmony");
+            GUI_Patches.Setup(_Harmony);
             JsonHandler.SetupJson();
 
             Log.LogInfo("ExtraRundownCustomisation Loaded");

@@ -433,6 +433,7 @@ namespace ExtraRundownCustomization.Handlers
 
             if (MTFOHotReloadAPI.HotReloadEnabled)
             {
+                
                 //Log.Info("Fixing MTFO hotreload button");
                 Transform buttonMenu = m_rundownInstance.transform.GetChild(2).GetChild(3);
 
@@ -446,22 +447,34 @@ namespace ExtraRundownCustomization.Handlers
                     }
                 }
             }
+            //Log.Info("MTFO Hotreload done");
 
             m_rundownInstance.m_buttonVanityItemDrops.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
             m_rundownInstance.m_buttonVanityItemDrops.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableVanityPage;
             m_rundownInstance.m_buttonVanityItemDrops.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableVanityPage;
             m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
             m_rundownInstance.m_vanityItemDropsNext.transform.GetChild(1).gameObject.SetActive(m_activeMiscRundownData.EnableVanityPage);
+            //Log.Info("vanity page fixed");
 
             if (!m_activeMiscRundownData.EnableSectorSummary)
             {
+                if (m_rundownInstance.m_tierMarkerSectorSummary == null)
+                {
+                    goto suddenDeath;
+                }
                 m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(90000, 0, 0);
             }
             else
             {
+                if (m_rundownInstance.m_tierMarkerSectorSummary == null)
+                {
+                    goto suddenDeath;
+                }
                 m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.SectorSummaryPosition.x, m_activeMiscRundownData.SectorSummaryPosition.y, m_activeMiscRundownData.SectorSummaryPosition.z);
                 m_rundownInstance.m_tierMarkerSectorSummary.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             }
+            suddenDeath:
+            //Log.Info("Sector Summary done");
 
             if (m_rundownInstance.m_rundownIsRevealed)
             {
@@ -469,9 +482,11 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     obj.gameObject.SetActive(false);
                 }
+                //Log.Info("disabled rundown selectors");
 
                 if (m_activeMiscRundownData.OverrideTierMarkerText)
                 {
+                    //Log.Info("Overriding tier marker text");
                     if (customTierMarker1 == null)
                     {
                         SetupRundownFeatures();
@@ -507,6 +522,7 @@ namespace ExtraRundownCustomization.Handlers
                     m_rundownInstance.m_tierMarker3.gameObject.SetActive(false);
                     m_rundownInstance.m_tierMarker4.gameObject.SetActive(false);
                     m_rundownInstance.m_tierMarker5.gameObject.SetActive(false);
+                    //Log.Info("TierMarker override done");
                     goto killme;
                 }
 
@@ -516,6 +532,7 @@ namespace ExtraRundownCustomization.Handlers
                 m_rundownInstance.m_tierMarker3.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
                 m_rundownInstance.m_tierMarker4.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
                 m_rundownInstance.m_tierMarker5.gameObject.SetActive(m_activeMiscRundownData.EnableTierMarkers);
+                //Log.Info("enabled tier markers (text not overridden)");
 
             killme:
                 if (m_activeMiscRundownData.EnableERCDataReload)
@@ -523,16 +540,18 @@ namespace ExtraRundownCustomization.Handlers
                     m_rundownInstance.m_matchmakeAllButton.gameObject.transform.localPosition = new UnityEngine.Vector3(0, 210, 0);
                     AddReloadButton();
                 }
+                //Log.Info("Added ERC data reload button");
 
                 m_rundownInstance.transform.GetChild(2).GetChild(4).GetChild(18).gameObject.SetActive(false);
                 m_rundownInstance.m_rundownIntelButton.gameObject.SetActive(m_activeMiscRundownData.EnableIntelButton);
                 m_rundownInstance.m_rundownIntelButton.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.IntelButtonPosition.x, m_activeMiscRundownData.IntelButtonPosition.y, m_activeMiscRundownData.IntelButtonPosition.z);
-
+                //Log.Info("Overridden intel button");
             }
 
             m_rundownInstance.m_matchmakeAllButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableMatchmakingButton);
             m_rundownInstance.m_matchmakeAllButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
             m_rundownInstance.m_matchmakeAllButton.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
+            //Log.Info("Overriden matchmakAll button");
 
             if (m_activeMiscRundownData.EnableERCDataReload)
             {
@@ -541,9 +560,7 @@ namespace ExtraRundownCustomization.Handlers
                 m_rundownInstance.m_matchmakeAllButton.GetComponent<TextMeshPro>().enabled = true;
                 AddReloadButton();
             }
-            m_rundownInstance.m_aboutTheRundownButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableButtonAboutTheRundown);
-            m_rundownInstance.m_aboutTheRundownButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableButtonAboutTheRundown;
-            m_rundownInstance.m_aboutTheRundownButton.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableButtonAboutTheRundown;
+            //Log.Info("made ERC data reload button again?");
             m_rundownInstance.m_discordButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableButtonDiscord);
             m_rundownInstance.m_discordButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableButtonDiscord;
             m_rundownInstance.m_discordButton.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableButtonDiscord;
@@ -583,7 +600,7 @@ namespace ExtraRundownCustomization.Handlers
             customTierMarker5.SetActive(false);
         }
 
-        public static void LazyUpdate()
+        public static void LazyUpdate() //Not so lazy update :(
         {
             if (m_popupMovementActive)
             {

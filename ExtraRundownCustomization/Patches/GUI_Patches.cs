@@ -10,21 +10,21 @@ namespace ExtraRundownCustomization.Patches
 {
     public class GUI_Patches
     {
-        public static void Setup()
+        public static void Setup(Harmony harmony)
         {
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_Update));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_ResetRundownSelection));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_UpdateHeaderText));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_SetIconStatus));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_ExpeditionIcon_New_UpdateBorderColor));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_UpdateTierIconsWithProgression));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_RundownSelectionRevealed));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_OnEnable));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_ResetElements));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_TryPlaceRundown));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_PlaceRundown));
-            Harmony.CreateAndPatchAll(typeof(Patch_CM_PageRundown_New_Setup));
-            Harmony.CreateAndPatchAll(typeof(Patch_PUI_Watermark_UpdateWatermark));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_Update));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_ResetRundownSelection));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_UpdateHeaderText));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_SetIconStatus));
+            harmony.PatchAll(typeof(Patch_CM_ExpeditionIcon_New_UpdateBorderColor));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_UpdateTierIconsWithProgression));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_RundownSelectionRevealed));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_OnEnable));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_ResetElements));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_TryPlaceRundown));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_PlaceRundown));
+            harmony.PatchAll(typeof(Patch_CM_PageRundown_New_Setup));
+            harmony.PatchAll(typeof(Patch_PUI_Watermark_UpdateWatermark));
 
             Log.Info("ERC GUI_Patches Setup");
         }
