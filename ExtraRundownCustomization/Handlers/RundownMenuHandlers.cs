@@ -110,9 +110,9 @@ namespace ExtraRundownCustomization.Handlers
 
             void UpdateRundownSelector(CM_RundownSelection comp, RundownSelector data)
             {
-                comp.transform.localPosition = new UnityEngine.Vector3(data.pos.x, data.pos.y, data.pos.z);
-                comp.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(data.rot.x, data.rot.y, data.rot.z));
-                comp.transform.localScale = new UnityEngine.Vector3(data.scale.x, data.scale.y, data.scale.z);
+                comp.transform.localPosition = data.pos;
+                comp.transform.localRotation = Quaternion.Euler(data.rot);
+                comp.transform.localScale = data.scale;
 
                 // R7 and R8 are special cases, R7 has the text component but it's not assigned, and R8 doesn't have it at all
                 if (comp.transform.GetChildCount() < 3) // only R8 has 3 children because of this situation
@@ -123,14 +123,15 @@ namespace ExtraRundownCustomization.Handlers
                         comp.m_altText.gameObject.SetActive(true);
                     }
                     comp.m_altText.text = data.altText;
-                    comp.m_altText.transform.localPosition = new UnityEngine.Vector3(data.altTextPos.x, data.altTextPos.y, data.altTextPos.z);
+                    comp.m_altText.transform.localPosition = data.altTextPos;
                 }
                 else // if was R8, then all of this^ would pass by
                 {
                     /* To keep everything hidden properly and forever, we can't just deactivate the game object, as reentering the selector screen would show them again
                     *  Normally everything's fine, because everything that would stay shown is under sub objects
                     *  The one exception is the R8 Friends Hosting text, which if it somehow decided to show, would bypass the game objects being deactivated
-                    * so if its holder is still present, parent it to another sub object   */
+                    *  so if its holder is still present, parent it to another sub object 
+                    *  this doesn't break component references, so things still update fine  */
                     var friendGO = comp.transform.Find("FriendsHosting");
                     if (friendGO != null) // hasn't already been moved
                     {
@@ -153,7 +154,7 @@ namespace ExtraRundownCustomization.Handlers
                 }
                 
                 comp.m_rundownText.text = data.name;
-                comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(data.namePos.x, data.namePos.y, data.namePos.z);
+                comp.m_rundownText.transform.localPosition = data.namePos;
 
                 // Enable all objects that should be enabled (i.e they already were)
                 for (int i = 0; i < comp.transform.GetChildCount(); i++)
@@ -192,24 +193,24 @@ namespace ExtraRundownCustomization.Handlers
                     return;
                 }
                 expIcon.SetShortName("<color=white>" + data.label);
-                expIcon.transform.localPosition = new UnityEngine.Vector3(data.buttonPos.x, data.buttonPos.y, data.buttonPos.z);
+                expIcon.transform.localPosition = data.buttonPos;
                 if (data.changeScale)
                 {
-                    expIcon.transform.localScale = new UnityEngine.Vector3(data.buttonScale.x, data.buttonScale.y, data.buttonScale.z);
+                    expIcon.transform.localScale = data.buttonScale;
                 }
                 //Since local prog sets the colour earlier I'm free to override it here
                 //And yes my dumbass put it in the wrong thing i woke up 20 minutes ago okay
-                expIcon.m_colorUnlocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
-                expIcon.m_colorStory = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
-                expIcon.m_colorLocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a * 0.66f);
+                expIcon.m_colorUnlocked = data.buttonColor;
+                expIcon.m_colorStory = data.buttonColor;
+                expIcon.m_colorLocked = data.buttonColor;
 
                 // Set the hoverout alpha since the expedition icon gets reset frequently anyway
                 // the hoverout color change doesn't stay long and causes a small visual bug
                 expIcon.m_spriteAlphaOut = expIcon.m_spriteAlphaOver;
-                expIcon.SetBorderColor(new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a));
+                expIcon.SetBorderColor(data.buttonColor);
                 expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
                 expIcon.m_artifactHeatText.text = data.heatText;
-                expIcon.m_statusText.transform.localPosition = new UnityEngine.Vector3(data.statusPos.x, data.statusPos.y, data.statusPos.z);
+                expIcon.m_statusText.transform.localPosition = data.statusPos;
                 if (data.overrideDecryptText)
                 {
                     expIcon.m_decryptErrorText.gameObject.SetActive(true);
@@ -372,7 +373,7 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     GameObject extPage = m_rundownInstance.m_guix_Ext.gameObject;
                     extPage.SetActive(data.EnableExtensionPage);
-                    extPage.transform.localPosition = new UnityEngine.Vector3(data.ExtensionPagePos.x, data.ExtensionPagePos.y, data.ExtensionPagePos.z);
+                    extPage.transform.localPosition = data.ExtensionPagePos;
                     extPage.transform.localScale = new UnityEngine.Vector3(0.85f, 0.85f, 0.85f);
                     m_rundownInstance.m_externalExpHeader.text = data.ExtensionPageText;
                 }
@@ -456,7 +457,7 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     goto suddenDeath;
                 }
-                m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.SectorSummaryPosition.x, m_activeMiscRundownData.SectorSummaryPosition.y, m_activeMiscRundownData.SectorSummaryPosition.z);
+                m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = m_activeMiscRundownData.SectorSummaryPosition;
                 m_rundownInstance.m_tierMarkerSectorSummary.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             }
             suddenDeath:
@@ -530,7 +531,7 @@ namespace ExtraRundownCustomization.Handlers
 
                 m_rundownInstance.transform.GetChild(2).GetChild(4).GetChild(18).gameObject.SetActive(false);
                 m_rundownInstance.m_rundownIntelButton.gameObject.SetActive(m_activeMiscRundownData.EnableIntelButton);
-                m_rundownInstance.m_rundownIntelButton.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.IntelButtonPosition.x, m_activeMiscRundownData.IntelButtonPosition.y, m_activeMiscRundownData.IntelButtonPosition.z);
+                m_rundownInstance.m_rundownIntelButton.transform.localPosition = m_activeMiscRundownData.IntelButtonPosition;
                 //Log.Info("Overridden intel button");
             }
 
