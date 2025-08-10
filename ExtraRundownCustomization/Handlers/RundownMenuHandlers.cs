@@ -158,12 +158,19 @@ namespace ExtraRundownCustomization.Handlers
                 // inverse the text's rotation so it doesn't look weird
                 comp.m_rundownText.transform.parent.localRotation = Quaternion.Inverse(comp.transform.localRotation);
 
-                // Enable all objects that should be enabled (i.e they already were)
-                for (int i = 0; i < comp.transform.GetChildCount(); i++)
-                {
-                    GameObject obj = comp.transform.GetChild(i).gameObject;
-                    obj.SetActive(data.enabled);
-                }
+                comp.m_originalColor = data.color;
+                // Calling these functions are what will actually update the color
+                if (comp.m_isHovering)
+                    comp.OnHoverIn();
+                else
+                    comp.OnHoverOut();
+
+                    // Enable all objects that should be enabled (i.e they already were)
+                    for (int i = 0; i < comp.transform.GetChildCount(); i++)
+                    {
+                        GameObject obj = comp.transform.GetChild(i).gameObject;
+                        obj.SetActive(data.enabled);
+                    }
                 // remove collider so you can't still enter the screen if you click the right spot lol
                 comp.m_collider.enabled = data.enabled;
             }

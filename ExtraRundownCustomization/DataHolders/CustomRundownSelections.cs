@@ -16,7 +16,7 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = -476.0f, y = 45.0f, z = 0.0f },
             rot = new() { x = 0.0f, y = 0.0f, z = 0.0f },
-            scale = new() { x = 0.6f, y = 0.6f, z = 0.6f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0.0f, y = 39.0f, z = 0.0f },
             altTextPos = new() { x = -46.0f, y = 34.8f, z = 0.0f },
@@ -29,7 +29,7 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = -241f, y = -78f, z = 0f },
             rot = new() { x = 0f, y = 0f, z = 0f },
-            scale = new() { x = 0.8f, y = 0.8f, z = 0.8f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
@@ -42,7 +42,7 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = -346f, y = 179.6f, z = 13.956f },
             rot = new() { x = 0f, y = 0f, z = 0f },
-            scale = new() { x = 0.8f, y = 0.8f, z = 0.8f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
@@ -55,7 +55,7 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = -109f, y = 226f, z = 0f },
             rot = new() { x = 0f, y = 0f, z = 0f },
-            scale = new() { x = 1.2f, y = 1.2f, z = 1.2f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
@@ -68,7 +68,7 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = 55f, y = -16f, z = 0f },
             rot = new() { x = 0f, y = 0f, z = 0f },
-            scale = new() { x = 1.1f, y = 1.1f, z = 1.1f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
@@ -81,7 +81,7 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = 240f, y = 235f, z = 0f },
             rot = new() { x = 0f, y = 0f, z = 0f },
-            scale = new() { x = 1.09f, y = 1.09f, z = 1.09f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
@@ -90,11 +90,11 @@ namespace ExtraRundownCustomization.DataHolders
         public RundownSelector Selector_R7 { get; set; } = new RundownSelector
         {
             name = "R7",
-            altText = "<color=orange>ALT://",
+            altText = "",
 
             pos = new() { x = 317f, y = -104f, z = 0f },
             rot = new() { x = 0f, y = 0f, z = 0f },
-            scale = new() { x = 1f, y = 1f, z = 1f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
@@ -105,9 +105,9 @@ namespace ExtraRundownCustomization.DataHolders
 
             pos = new() { x = 550.0f, y = 150.0f, z = 0.0f },
             rot = new() { x = 0.0f, y = 0.0f, z = 0.0f },
-            scale = new() { x = 1.25f, y = 1.2f, z = 1.25f },
+            scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
 
-            namePos = new() { x = 0f, y = 39f, z = 0.0f }
+            namePos = new() { x = 0f, y = 134f, z = 0.0f }
         };
     }
 
@@ -123,7 +123,8 @@ namespace ExtraRundownCustomization.DataHolders
 
         public Vector3 namePos { get; set; }
         public virtual Vector3 altTextPos { get; set; }
-        public Vector3 textScale { get; set; } = new() { x=1, y=1, z=1 };
+        public Vector3 textScale { get; set; } = new() { x = 1, y = 1, z = 1 };
+        public Color color { get; set; } = new() { r = 1, g = 1, b = 1, a = 0.7843f };
     }
     public class RundownSelector_R8 : RundownSelector
     {
