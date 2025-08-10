@@ -72,13 +72,6 @@ namespace ExtraRundownCustomization.Handlers
 
             UpdateMiscFeatures();
 
-            rundownSelectors.Clear();
-            for (int i = 0; i < 8; i++)
-            {
-                rundownSelectors.Add(__instance.m_rundownHolder.GetChild(16).GetChild(i).gameObject);
-                //Log.Info("Adding GO to the list GO name: " + __instance.m_rundownHolder.GetChild(16).GetChild(i).gameObject.name);
-            }
-
             if (m_rundownInstance.m_currentRundownData != null)
             {
                 __instance.m_textRundownHeaderTop.text = "<color=white><size=300%>" + m_rundownInstance.m_currentRundownData.StorytellingData.Title;
@@ -93,90 +86,83 @@ namespace ExtraRundownCustomization.Handlers
                 __instance.m_textRundownHeader.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
             }
 
-            foreach (GameObject obj in rundownSelectors)
+            // CM_PageRundown_New.m_rundownSelections is in the same order they're reveleaed in (1, 7, 2... 6, 8)
+            // so order the active selections accordingly
+            RundownSelector[] activeRundownSelections = [
+                m_activeRundownSelectionData.Selector_R1,
+                m_activeRundownSelectionData.Selector_R7,
+                m_activeRundownSelectionData.Selector_R2,
+                m_activeRundownSelectionData.Selector_R3,
+                m_activeRundownSelectionData.Selector_R4,
+                m_activeRundownSelectionData.Selector_R5,
+                m_activeRundownSelectionData.Selector_R6,
+                m_activeRundownSelectionData.Selector_R8,
+            ];
+
+            for (int i = 0; i < __instance.m_rundownSelections.Count; i++)
             {
-                //Log.Info("in foreach loop go name: " + obj.name);
-                switch (obj.name)
-                {
-                    case "Rundown_Surface_SelectionALT_R1":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R1);
-                    }
-                    break;
+                CM_RundownSelection selector = __instance.m_rundownSelections[i];
+                RundownSelector selector_data = activeRundownSelections[i];
+                
+                UpdateRundownSelector(selector, selector_data);
 
-                    case "Rundown_Surface_SelectionALT_R2":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R2);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R3":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R3);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R4":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R4);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R5":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R5);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R6":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R6);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R7":
-                    {
-
-                        obj.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.pos.x, m_activeRundownSelectionData.Selector_R7.pos.y, m_activeRundownSelectionData.Selector_R7.pos.z);
-                        obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.rot.x, m_activeRundownSelectionData.Selector_R7.rot.y, m_activeRundownSelectionData.Selector_R7.rot.z));
-                        obj.transform.localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.scale.x, m_activeRundownSelectionData.Selector_R7.scale.y, m_activeRundownSelectionData.Selector_R7.scale.z);
-
-                        var comp = obj.GetComponent<CM_RundownSelection>();
-                        TextMeshPro altText = obj.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
-                        comp.m_rundownText.text = m_activeRundownSelectionData.Selector_R7.name;
-                        altText.text = m_activeRundownSelectionData.Selector_R7.altText;
-                        comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.namePos.x, m_activeRundownSelectionData.Selector_R7.namePos.y, m_activeRundownSelectionData.Selector_R7.namePos.z);
-                        altText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.altTextPos.x, m_activeRundownSelectionData.Selector_R7.altTextPos.y, m_activeRundownSelectionData.Selector_R7.altTextPos.z);
-                        altText.gameObject.SetActive(true);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R8":
-                    {
-
-                        obj.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.pos.x, m_activeRundownSelectionData.Selector_R8.pos.y, m_activeRundownSelectionData.Selector_R8.pos.z);
-                        obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.rot.x, m_activeRundownSelectionData.Selector_R8.rot.y, m_activeRundownSelectionData.Selector_R8.rot.z));
-                        obj.transform.localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.scale.x, m_activeRundownSelectionData.Selector_R8.scale.y, m_activeRundownSelectionData.Selector_R8.scale.z);
-
-                        var comp = obj.GetComponent<CM_RundownSelection>();
-                        comp.m_rundownText.text = m_activeRundownSelectionData.Selector_R8.name;
-                        comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.namePos.x, m_activeRundownSelectionData.Selector_R8.namePos.y, m_activeRundownSelectionData.Selector_R8.namePos.z);
-                    }
-                    break;
-                }
             }
 
-            void UpdateRundownSelector(GameObject obj, RundownSelector data)
+            void UpdateRundownSelector(CM_RundownSelection comp, RundownSelector data)
             {
-                obj.transform.localPosition = new UnityEngine.Vector3(data.pos.x, data.pos.y, data.pos.z);
-                obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(data.rot.x, data.rot.y, data.rot.z));
-                obj.transform.localScale = new UnityEngine.Vector3(data.scale.x, data.scale.y, data.scale.z);
+                comp.transform.localPosition = new UnityEngine.Vector3(data.pos.x, data.pos.y, data.pos.z);
+                comp.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(data.rot.x, data.rot.y, data.rot.z));
+                comp.transform.localScale = new UnityEngine.Vector3(data.scale.x, data.scale.y, data.scale.z);
 
-                var comp = obj.GetComponent<CM_RundownSelection>();
+                // R7 and R8 are special cases, R7 has the text component but it's not assigned, and R8 doesn't have it at all
+                if (comp.transform.GetChildCount() < 3) // only R8 has 3 children because of this situation
+                {
+                    if (comp.m_altText == null) // Object structure suggests that it has alt text tmp, but not assigned
+                    {
+                        comp.m_altText = comp.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
+                        comp.m_altText.gameObject.SetActive(true);
+                    }
+                    comp.m_altText.text = data.altText;
+                    comp.m_altText.transform.localPosition = new UnityEngine.Vector3(data.altTextPos.x, data.altTextPos.y, data.altTextPos.z);
+                }
+                else // if was R8, then all of this^ would pass by
+                {
+                    /* To keep everything hidden properly and forever, we can't just deactivate the game object, as reentering the selector screen would show them again
+                    *  Normally everything's fine, because everything that would stay shown is under sub objects
+                    *  The one exception is the R8 Friends Hosting text, which if it somehow decided to show, would bypass the game objects being deactivated
+                    * so if its holder is still present, parent it to another sub object   */
+                    var friendGO = comp.transform.Find("FriendsHosting");
+                    if (friendGO != null) // hasn't already been moved
+                    {
+                        Transform friendHolder = new GameObject("TextHolder").transform;
+                        friendHolder.SetParent(comp.transform, worldPositionStays: false);
+                        friendGO.SetParent(friendHolder, worldPositionStays: true);
+
+
+                        /* repeat this whole process for the rundown text as well
+                        *  don't want to use the SAME holder because then child count will change for the above alt text logic
+                        *  also using the same if block because the idea is just to have done this exactly once
+                        *  so don't run the extra transform.Find() and null check */
+                        var textGO = comp.transform.Find("RundownText");
+                        Transform textHolder = new GameObject("TextHolder").transform;
+                        textHolder.SetParent(comp.transform, worldPositionStays: false);
+                        textGO.SetParent(textHolder, worldPositionStays: true);
+                    }
+
+                    
+                }
+                
                 comp.m_rundownText.text = data.name;
-                comp.m_altText.text = data.altText;
                 comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(data.namePos.x, data.namePos.y, data.namePos.z);
-                comp.m_altText.transform.localPosition = new UnityEngine.Vector3(data.altTextPos.x, data.altTextPos.y, data.altTextPos.z);
+
+                // Enable all objects that should be enabled (i.e they already were)
+                for (int i = 0; i < comp.transform.GetChildCount(); i++)
+                {
+                    GameObject obj = comp.transform.GetChild(i).gameObject;
+                    obj.SetActive(data.enabled);
+                }
+                // remove collider so you can't still enter the screen if you click the right spot lol
+                comp.m_collider.enabled = data.enabled;
             }
         }
 

@@ -102,6 +102,7 @@
 
     public class RundownSelector
     {
+        public bool enabled { get; set; } = true; // default value for backcompat
         public string name { get; set; }
         public string altText { get; set; }
 
@@ -111,9 +112,11 @@
 
         public Vector3 namePos { get; set; }
         public Vector3 altTextPos { get; set; }
+        public Vector3 textScale { get; set; } = new() { x=1, y=1, z=1 };
     }
     public class Selection_R8
     {
+        public bool enabled { get; set; } = true; // default value for backcompat
         public string name { get; set; } = "R8";
 
         public Vector3 pos { set; get; } = new() { x = 550.0f, y = 150.0f, z = 0.0f };
@@ -121,5 +124,22 @@
         public Vector3 scale { get; set; } = new() { x = 1.25f, y = 1.2f, z = 1.25f};
 
         public Vector3 namePos { get; set; } = new() { x = 0f, y = 39f, z = 0.0f };
+        public Vector3 textScale { get; set; } = new() { x = 1, y = 1, z = 1 };
+
+        // implicitly be able to cast this to save on some code later
+        // Gotta be careful for if any values get added to either of these, gotta make sure it gets added to the other as well
+        public static implicit operator RundownSelector(Selection_R8 selection)
+        {
+            return new()
+            {
+                enabled = selection.enabled,
+                name = selection.name,
+                pos = selection.pos,
+                rot = selection.rot,
+                scale = selection.scale,
+                namePos = selection.namePos,
+                textScale = selection.textScale,
+            };
+        }
     }
 }
