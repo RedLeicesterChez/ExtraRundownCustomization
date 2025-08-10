@@ -225,13 +225,16 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     expIcon.SetUnlockedByText();
                 }
+                //Since local prog sets the colour earlier I'm free to override it here
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
 
+                //local prog bs starts here
                 var rundownID = LocalProgressionManager.Current.ActiveRundownID();
                 var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
                 UnityEngine.Color BORDER_COLOR = new(0f, 1f, 246f / 255f, 0.5f);
 
+                //if custom local prog box exists
                 if (expIcon.transform.childCount > 1)
                 {
                     SpriteRenderer[] boxSprites2 = expIcon.transform.GetChild(1).GetComponentsInChildren<SpriteRenderer>();
@@ -249,6 +252,7 @@ namespace ExtraRundownCustomization.Handlers
                     return;
                 }
 
+                //Make the new fuckass box and set the colour (this could be optimised but idrc)
                 GameObject newBox = GameObject.Instantiate(expIcon.transform.GetChild(0).GetChild(1).gameObject, expIcon.transform);
                 newBox.transform.localPosition = new UnityEngine.Vector3(-3, 0, 0);
                 newBox.transform.localScale = new UnityEngine.Vector3(0.97f, 0.97f, 0.97f);
