@@ -9,6 +9,7 @@ using TMPro;
 using UnityEngine;
 using MTFO.API;
 using GTFO.API;
+using System.Linq;
 
 namespace ExtraRundownCustomization.Handlers
 {
@@ -391,39 +392,22 @@ namespace ExtraRundownCustomization.Handlers
                 }
             }
 
-            //Can't use a fucking switch :angry:
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R1.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R1);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R2.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R2);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R3.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R3);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R4.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R4);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R5.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R5);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R6.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R6);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R7.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R7);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R8.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R8);
-            }
+            IndividualRundownLayout[] allRundownDatas = [
+                m_activeGlobalRundownLayoutData.R1,
+                m_activeGlobalRundownLayoutData.R2,
+                m_activeGlobalRundownLayoutData.R3,
+                m_activeGlobalRundownLayoutData.R4,
+                m_activeGlobalRundownLayoutData.R5,
+                m_activeGlobalRundownLayoutData.R6,
+                m_activeGlobalRundownLayoutData.R7,
+                m_activeGlobalRundownLayoutData.R8
+                ];
+            var correctRundown = allRundownDatas.FirstOrDefault(rundownData =>
+                rundownData.RundownDatablockID == m_rundownInstance.m_currentRundownData.persistentID
+            );
+
+            if (correctRundown != null)
+                UpdateRundown(correctRundown);
         }
 
         public static void UpdateMiscFeatures(bool isRepeat = false)
