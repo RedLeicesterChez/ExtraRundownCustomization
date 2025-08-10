@@ -209,6 +209,8 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     expIcon.transform.localScale = new UnityEngine.Vector3(data.buttonScale.x, data.buttonScale.y, data.buttonScale.z);
                 }
+                //Since local prog sets the colour earlier I'm free to override it here
+                //And yes my dumbass put it in the wrong thing i woke up 20 minutes ago okay
                 expIcon.m_colorUnlocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorStory = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorLocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a * 0.66f);
@@ -225,7 +227,6 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     expIcon.SetUnlockedByText();
                 }
-                //Since local prog sets the colour earlier I'm free to override it here
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
 
