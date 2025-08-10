@@ -1,4 +1,6 @@
-﻿namespace ExtraRundownCustomization.DataHolders
+﻿using System.Text.Json.Serialization;
+
+namespace ExtraRundownCustomization.DataHolders
 {
     [System.Serializable]
     public class CustomRundownSelections
@@ -97,49 +99,37 @@
             namePos = new() { x = 0f, y = 39f, z = 0f },
             altTextPos = new() { x = -46f, y = 34.8f, z = 0f }
         };
-        public Selection_R8 Selector_R8 { get; set; } = new();
+        public RundownSelector_R8 Selector_R8 { get; set; } = new RundownSelector_R8
+        {
+            name = "R8",
+
+            pos = new() { x = 550.0f, y = 150.0f, z = 0.0f },
+            rot = new() { x = 0.0f, y = 0.0f, z = 0.0f },
+            scale = new() { x = 1.25f, y = 1.2f, z = 1.25f },
+
+            namePos = new() { x = 0f, y = 39f, z = 0.0f }
+        };
     }
 
     public class RundownSelector
     {
         public bool enabled { get; set; } = true; // default value for backcompat
         public string name { get; set; }
-        public string altText { get; set; }
+        public virtual string altText { get; set; }
 
         public Vector3 pos { get; set; }
         public Vector3 rot { get; set; }
         public Vector3 scale { get; set; }
 
         public Vector3 namePos { get; set; }
-        public Vector3 altTextPos { get; set; }
+        public virtual Vector3 altTextPos { get; set; }
         public Vector3 textScale { get; set; } = new() { x=1, y=1, z=1 };
     }
-    public class Selection_R8
+    public class RundownSelector_R8 : RundownSelector
     {
-        public bool enabled { get; set; } = true; // default value for backcompat
-        public string name { get; set; } = "R8";
-
-        public Vector3 pos { set; get; } = new() { x = 550.0f, y = 150.0f, z = 0.0f };
-        public Vector3 rot { set; get; } = new() { x = 0.0f, y = 0.0f, z = 0.0f };
-        public Vector3 scale { get; set; } = new() { x = 1.25f, y = 1.2f, z = 1.25f};
-
-        public Vector3 namePos { get; set; } = new() { x = 0f, y = 39f, z = 0.0f };
-        public Vector3 textScale { get; set; } = new() { x = 1, y = 1, z = 1 };
-
-        // implicitly be able to cast this to save on some code later
-        // Gotta be careful for if any values get added to either of these, gotta make sure it gets added to the other as well
-        public static implicit operator RundownSelector(Selection_R8 selection)
-        {
-            return new()
-            {
-                enabled = selection.enabled,
-                name = selection.name,
-                pos = selection.pos,
-                rot = selection.rot,
-                scale = selection.scale,
-                namePos = selection.namePos,
-                textScale = selection.textScale,
-            };
-        }
+        [JsonIgnore]
+        public override string altText { get; set; }
+        [JsonIgnore]
+        public override Vector3 altTextPos { get; set; }
     }
 }
