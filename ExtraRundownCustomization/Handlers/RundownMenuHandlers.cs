@@ -149,12 +149,14 @@ namespace ExtraRundownCustomization.Handlers
                         textHolder.SetParent(comp.transform, worldPositionStays: false);
                         textGO.SetParent(textHolder, worldPositionStays: true);
                     }
-
-                    
                 }
                 
                 comp.m_rundownText.text = data.name;
                 comp.m_rundownText.transform.localPosition = data.namePos;
+                // scale the text parent so it applies to the alt and rundown text equally
+                comp.m_rundownText.transform.parent.localScale = data.textScale;
+                // inverse the text's rotation so it doesn't look weird
+                comp.m_rundownText.transform.parent.localRotation = Quaternion.Inverse(comp.transform.localRotation);
 
                 // Enable all objects that should be enabled (i.e they already were)
                 for (int i = 0; i < comp.transform.GetChildCount(); i++)
