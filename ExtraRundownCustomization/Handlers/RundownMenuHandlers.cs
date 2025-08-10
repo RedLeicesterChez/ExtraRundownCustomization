@@ -215,6 +215,10 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_colorUnlocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorStory = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorLocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a * 0.66f);
+
+                // Set the hoverout alpha since the expedition icon gets reset frequently anyway
+                // the hoverout color change doesn't stay long and causes a small visual bug
+                expIcon.m_spriteAlphaOut = expIcon.m_spriteAlphaOver;
                 expIcon.SetBorderColor(new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a));
                 expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
                 expIcon.m_artifactHeatText.text = data.heatText;
@@ -277,7 +281,6 @@ namespace ExtraRundownCustomization.Handlers
                         sprite.color = BORDER_COLOR;
                     }
                 }
-                //Log.Info("Updated Icon");
             }
 
             void UpdateRundown(IndividualRundownLayout data)
