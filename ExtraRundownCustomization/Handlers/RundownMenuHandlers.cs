@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using MTFO.API;
+using GTFO.API;
 
 namespace ExtraRundownCustomization.Handlers
 {
@@ -230,6 +231,13 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
 
+                InteropAPI.ExecuteWhenPluginExists("Inas.LocalProgression", (BepInEx.PluginInfo _) => DoLocalProgressionStuff(expIcon));
+
+                //Log.Info("Updated Icon");
+            }
+
+            void DoLocalProgressionStuff(CM_ExpeditionIcon_New expIcon)
+            {
                 //local prog bs starts here
                 var rundownID = LocalProgressionManager.Current.ActiveRundownID();
                 var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
