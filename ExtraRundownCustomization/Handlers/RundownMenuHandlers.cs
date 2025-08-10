@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using MTFO.API;
+using GTFO.API;
+using System.Linq;
 
 namespace ExtraRundownCustomization.Handlers
 {
@@ -214,6 +216,10 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_colorUnlocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorStory = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
                 expIcon.m_colorLocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a * 0.66f);
+
+                // Set the hoverout alpha since the expedition icon gets reset frequently anyway
+                // the hoverout color change doesn't stay long and causes a small visual bug
+                expIcon.m_spriteAlphaOut = expIcon.m_spriteAlphaOver;
                 expIcon.SetBorderColor(new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a));
                 expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
                 expIcon.m_artifactHeatText.text = data.heatText;
@@ -230,6 +236,13 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
 
+                InteropAPI.ExecuteWhenPluginExists("Inas.LocalProgression", (BepInEx.PluginInfo _) => DoLocalProgressionStuff(expIcon));
+
+                //Log.Info("Updated Icon");
+            }
+
+            void DoLocalProgressionStuff(CM_ExpeditionIcon_New expIcon)
+            {
                 //local prog bs starts here
                 var rundownID = LocalProgressionManager.Current.ActiveRundownID();
                 var lpData = LocalProgressionManager.Current.GetExpeditionLP(rundownID, expIcon.Tier, expIcon.ExpIndex);
@@ -269,7 +282,6 @@ namespace ExtraRundownCustomization.Handlers
                         sprite.color = BORDER_COLOR;
                     }
                 }
-                //Log.Info("Updated Icon");
             }
 
             void UpdateRundown(IndividualRundownLayout data)
@@ -380,39 +392,22 @@ namespace ExtraRundownCustomization.Handlers
                 }
             }
 
-            //Can't use a fucking switch :angry:
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R1.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R1);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R2.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R2);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R3.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R3);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R4.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R4);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R5.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R5);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R6.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R6);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R7.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R7);
-            }
-            if (m_rundownInstance.m_currentRundownData.persistentID == m_activeGlobalRundownLayoutData.R8.RundownDatablockID)
-            {
-                UpdateRundown(m_activeGlobalRundownLayoutData.R8);
-            }
+            IndividualRundownLayout[] allRundownDatas = [
+                m_activeGlobalRundownLayoutData.R1,
+                m_activeGlobalRundownLayoutData.R2,
+                m_activeGlobalRundownLayoutData.R3,
+                m_activeGlobalRundownLayoutData.R4,
+                m_activeGlobalRundownLayoutData.R5,
+                m_activeGlobalRundownLayoutData.R6,
+                m_activeGlobalRundownLayoutData.R7,
+                m_activeGlobalRundownLayoutData.R8
+                ];
+            var correctRundown = allRundownDatas.FirstOrDefault(rundownData =>
+                rundownData.RundownDatablockID == m_rundownInstance.m_currentRundownData.persistentID
+            );
+
+            if (correctRundown != null)
+                UpdateRundown(correctRundown);
         }
 
         public static void UpdateMiscFeatures(bool isRepeat = false)
