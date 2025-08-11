@@ -165,14 +165,18 @@ namespace ExtraRundownCustomization.Handlers
                 else
                     comp.OnHoverOut(); // OnHoverOut is used for future proofing for liveedit
 
-                    // Enable all objects that should be enabled (i.e they already were)
+                if (data.useFlatVersion)
+                    comp.RotateGUIXFlat();
+                else
+                    comp.ResetGUIXRotation(); // pretty much for hotreload purposes
+
                 comp.SetIsUsed(data.enabled);
 
-                    for (int i = 0; i < comp.transform.GetChildCount(); i++)
-                    {
-                        GameObject obj = comp.transform.GetChild(i).gameObject;
+                for (int i = 0; i < comp.transform.GetChildCount(); i++)
+                {
+                    GameObject obj = comp.transform.GetChild(i).gameObject;
                     obj.SetActive(data.show);
-                    }
+                }
                 // remove collider so you can't still enter the screen if you click the right spot lol
                 comp.m_collider.enabled = data.show;
             }

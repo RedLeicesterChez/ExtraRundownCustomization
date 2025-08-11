@@ -118,6 +118,7 @@ namespace ExtraRundownCustomization.DataHolders
         public string name { get; set; }
         public virtual string altText { get; set; }
 
+        public bool useFlatVersion { get; set; } = false;
         public Vector3 pos { get; set; }
         public Vector3 rot { get; set; }
         public Vector3 scale { get; set; }
