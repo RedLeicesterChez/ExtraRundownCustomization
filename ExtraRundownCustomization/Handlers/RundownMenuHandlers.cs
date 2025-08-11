@@ -72,13 +72,6 @@ namespace ExtraRundownCustomization.Handlers
 
             UpdateMiscFeatures();
 
-            rundownSelectors.Clear();
-            for (int i = 0; i < 8; i++)
-            {
-                rundownSelectors.Add(__instance.m_rundownHolder.GetChild(16).GetChild(i).gameObject);
-                //Log.Info("Adding GO to the list GO name: " + __instance.m_rundownHolder.GetChild(16).GetChild(i).gameObject.name);
-            }
-
             if (m_rundownInstance.m_currentRundownData != null)
             {
                 __instance.m_textRundownHeaderTop.text = "<color=white><size=300%>" + m_rundownInstance.m_currentRundownData.StorytellingData.Title;
@@ -93,90 +86,99 @@ namespace ExtraRundownCustomization.Handlers
                 __instance.m_textRundownHeader.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
             }
 
-            foreach (GameObject obj in rundownSelectors)
+            // CM_PageRundown_New.m_rundownSelections is in the same order they're reveleaed in (1, 7, 2... 6, 8)
+            // so order the active selections accordingly
+            RundownSelector[] activeRundownSelections = [
+                m_activeRundownSelectionData.Selector_R1,
+                m_activeRundownSelectionData.Selector_R7,
+                m_activeRundownSelectionData.Selector_R2,
+                m_activeRundownSelectionData.Selector_R3,
+                m_activeRundownSelectionData.Selector_R4,
+                m_activeRundownSelectionData.Selector_R5,
+                m_activeRundownSelectionData.Selector_R6,
+                m_activeRundownSelectionData.Selector_R8,
+            ];
+
+            for (int i = 0; i < __instance.m_rundownSelections.Count; i++)
             {
-                //Log.Info("in foreach loop go name: " + obj.name);
-                switch (obj.name)
-                {
-                    case "Rundown_Surface_SelectionALT_R1":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R1);
-                    }
-                    break;
+                CM_RundownSelection selector = __instance.m_rundownSelections[i];
+                RundownSelector selector_data = activeRundownSelections[i];
+                
+                UpdateRundownSelector(selector, selector_data);
 
-                    case "Rundown_Surface_SelectionALT_R2":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R2);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R3":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R3);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R4":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R4);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R5":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R5);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R6":
-                    {
-                        UpdateRundownSelector(obj, m_activeRundownSelectionData.Selector_R6);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R7":
-                    {
-
-                        obj.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.pos.x, m_activeRundownSelectionData.Selector_R7.pos.y, m_activeRundownSelectionData.Selector_R7.pos.z);
-                        obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.rot.x, m_activeRundownSelectionData.Selector_R7.rot.y, m_activeRundownSelectionData.Selector_R7.rot.z));
-                        obj.transform.localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.scale.x, m_activeRundownSelectionData.Selector_R7.scale.y, m_activeRundownSelectionData.Selector_R7.scale.z);
-
-                        var comp = obj.GetComponent<CM_RundownSelection>();
-                        TextMeshPro altText = obj.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
-                        comp.m_rundownText.text = m_activeRundownSelectionData.Selector_R7.name;
-                        altText.text = m_activeRundownSelectionData.Selector_R7.altText;
-                        comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.namePos.x, m_activeRundownSelectionData.Selector_R7.namePos.y, m_activeRundownSelectionData.Selector_R7.namePos.z);
-                        altText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R7.altTextPos.x, m_activeRundownSelectionData.Selector_R7.altTextPos.y, m_activeRundownSelectionData.Selector_R7.altTextPos.z);
-                        altText.gameObject.SetActive(true);
-                    }
-                    break;
-
-                    case "Rundown_Surface_SelectionALT_R8":
-                    {
-
-                        obj.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.pos.x, m_activeRundownSelectionData.Selector_R8.pos.y, m_activeRundownSelectionData.Selector_R8.pos.z);
-                        obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.rot.x, m_activeRundownSelectionData.Selector_R8.rot.y, m_activeRundownSelectionData.Selector_R8.rot.z));
-                        obj.transform.localScale = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.scale.x, m_activeRundownSelectionData.Selector_R8.scale.y, m_activeRundownSelectionData.Selector_R8.scale.z);
-
-                        var comp = obj.GetComponent<CM_RundownSelection>();
-                        comp.m_rundownText.text = m_activeRundownSelectionData.Selector_R8.name;
-                        comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(m_activeRundownSelectionData.Selector_R8.namePos.x, m_activeRundownSelectionData.Selector_R8.namePos.y, m_activeRundownSelectionData.Selector_R8.namePos.z);
-                    }
-                    break;
-                }
             }
 
-            void UpdateRundownSelector(GameObject obj, RundownSelector data)
+            void UpdateRundownSelector(CM_RundownSelection comp, RundownSelector data)
             {
-                obj.transform.localPosition = new UnityEngine.Vector3(data.pos.x, data.pos.y, data.pos.z);
-                obj.transform.localRotation = Quaternion.Euler(new UnityEngine.Vector3(data.rot.x, data.rot.y, data.rot.z));
-                obj.transform.localScale = new UnityEngine.Vector3(data.scale.x, data.scale.y, data.scale.z);
+                comp.transform.localPosition = data.pos;
+                comp.transform.localRotation = Quaternion.Euler(data.rot);
+                comp.transform.localScale = data.scale;
 
-                var comp = obj.GetComponent<CM_RundownSelection>();
+                // R7 and R8 are special cases, R7 has the text component but it's not assigned, and R8 doesn't have it at all
+                if (comp.transform.GetChildCount() < 3) // only R8 has 3 children because of this situation
+                {
+                    if (comp.m_altText == null) // Object structure suggests that it has alt text tmp, but not assigned
+                    {
+                        comp.m_altText = comp.transform.GetChild(0).GetChild(0).GetComponent<TextMeshPro>();
+                        comp.m_altText.gameObject.SetActive(true);
+                    }
+                    comp.m_altText.text = data.altText;
+                    comp.m_altText.transform.localPosition = data.altTextPos;
+                }
+                else // if was R8, then all of this^ would pass by
+                {
+                    /* To keep everything hidden properly and forever, we can't just deactivate the game object, as reentering the selector screen would show them again
+                    *  Normally everything's fine, because everything that would stay shown is under sub objects
+                    *  The one exception is the R8 Friends Hosting text, which if it somehow decided to show, would bypass the game objects being deactivated
+                    *  so if its holder is still present, parent it to another sub object 
+                    *  this doesn't break component references, so things still update fine  */
+                    var friendGO = comp.transform.Find("FriendsHosting");
+                    if (friendGO != null) // hasn't already been moved
+                    {
+                        Transform friendHolder = new GameObject("TextHolder").transform;
+                        friendHolder.SetParent(comp.transform, worldPositionStays: false);
+                        friendGO.SetParent(friendHolder, worldPositionStays: true);
+
+
+                        /* repeat this whole process for the rundown text as well
+                        *  don't want to use the SAME holder because then child count will change for the above alt text logic
+                        *  also using the same if block because the idea is just to have done this exactly once
+                        *  so don't run the extra transform.Find() and null check */
+                        var textGO = comp.transform.Find("RundownText");
+                        Transform textHolder = new GameObject("TextHolder").transform;
+                        textHolder.SetParent(comp.transform, worldPositionStays: false);
+                        textGO.SetParent(textHolder, worldPositionStays: true);
+                    }
+                }
+                
                 comp.m_rundownText.text = data.name;
-                comp.m_altText.text = data.altText;
-                comp.m_rundownText.transform.localPosition = new UnityEngine.Vector3(data.namePos.x, data.namePos.y, data.namePos.z);
-                comp.m_altText.transform.localPosition = new UnityEngine.Vector3(data.altTextPos.x, data.altTextPos.y, data.altTextPos.z);
+                comp.m_rundownText.transform.localPosition = data.namePos;
+                // scale the text parent so it applies to the alt and rundown text equally
+                comp.m_rundownText.transform.parent.localScale = data.textScale;
+                // inverse the text's rotation so it doesn't look weird
+                comp.m_rundownText.transform.parent.localRotation = Quaternion.Inverse(comp.transform.localRotation);
+
+                comp.m_originalColor = data.color;
+                // Calling these functions are what will actually update the color
+                if (comp.m_isHovering)
+                    comp.OnHoverIn();
+                else
+                    comp.OnHoverOut(); // OnHoverOut is used for future proofing for liveedit
+
+                if (data.useFlatVersion)
+                    comp.RotateGUIXFlat();
+                else
+                    comp.ResetGUIXRotation(); // pretty much for hotreload purposes
+
+                comp.SetIsUsed(data.enabled);
+
+                for (int i = 0; i < comp.transform.GetChildCount(); i++)
+                {
+                    GameObject obj = comp.transform.GetChild(i).gameObject;
+                    obj.SetActive(data.show);
+                }
+                // remove collider so you can't still enter the screen if you click the right spot lol
+                comp.m_collider.enabled = data.show;
             }
         }
 
@@ -206,24 +208,24 @@ namespace ExtraRundownCustomization.Handlers
                     return;
                 }
                 expIcon.SetShortName("<color=white>" + data.label);
-                expIcon.transform.localPosition = new UnityEngine.Vector3(data.buttonPos.x, data.buttonPos.y, data.buttonPos.z);
+                expIcon.transform.localPosition = data.buttonPos;
                 if (data.changeScale)
                 {
-                    expIcon.transform.localScale = new UnityEngine.Vector3(data.buttonScale.x, data.buttonScale.y, data.buttonScale.z);
+                    expIcon.transform.localScale = data.buttonScale;
                 }
                 //Since local prog sets the colour earlier I'm free to override it here
                 //And yes my dumbass put it in the wrong thing i woke up 20 minutes ago okay
-                expIcon.m_colorUnlocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
-                expIcon.m_colorStory = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a);
-                expIcon.m_colorLocked = new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a * 0.66f);
+                expIcon.m_colorUnlocked = data.buttonColor;
+                expIcon.m_colorStory = data.buttonColor;
+                expIcon.m_colorLocked = data.buttonColor;
 
                 // Set the hoverout alpha since the expedition icon gets reset frequently anyway
                 // the hoverout color change doesn't stay long and causes a small visual bug
                 expIcon.m_spriteAlphaOut = expIcon.m_spriteAlphaOver;
-                expIcon.SetBorderColor(new UnityEngine.Color(data.buttonColor.r, data.buttonColor.g, data.buttonColor.b, data.buttonColor.a));
+                expIcon.SetBorderColor(data.buttonColor);
                 expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
                 expIcon.m_artifactHeatText.text = data.heatText;
-                expIcon.m_statusText.transform.localPosition = new UnityEngine.Vector3(data.statusPos.x, data.statusPos.y, data.statusPos.z);
+                expIcon.m_statusText.transform.localPosition = data.statusPos;
                 if (data.overrideDecryptText)
                 {
                     expIcon.m_decryptErrorText.gameObject.SetActive(true);
@@ -386,7 +388,7 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     GameObject extPage = m_rundownInstance.m_guix_Ext.gameObject;
                     extPage.SetActive(data.EnableExtensionPage);
-                    extPage.transform.localPosition = new UnityEngine.Vector3(data.ExtensionPagePos.x, data.ExtensionPagePos.y, data.ExtensionPagePos.z);
+                    extPage.transform.localPosition = data.ExtensionPagePos;
                     extPage.transform.localScale = new UnityEngine.Vector3(0.85f, 0.85f, 0.85f);
                     m_rundownInstance.m_externalExpHeader.text = data.ExtensionPageText;
                 }
@@ -470,7 +472,7 @@ namespace ExtraRundownCustomization.Handlers
                 {
                     goto suddenDeath;
                 }
-                m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.SectorSummaryPosition.x, m_activeMiscRundownData.SectorSummaryPosition.y, m_activeMiscRundownData.SectorSummaryPosition.z);
+                m_rundownInstance.m_tierMarkerSectorSummary.transform.localPosition = m_activeMiscRundownData.SectorSummaryPosition;
                 m_rundownInstance.m_tierMarkerSectorSummary.transform.GetChild(0).GetChild(0).gameObject.SetActive(false);
             }
             suddenDeath:
@@ -544,7 +546,7 @@ namespace ExtraRundownCustomization.Handlers
 
                 m_rundownInstance.transform.GetChild(2).GetChild(4).GetChild(18).gameObject.SetActive(false);
                 m_rundownInstance.m_rundownIntelButton.gameObject.SetActive(m_activeMiscRundownData.EnableIntelButton);
-                m_rundownInstance.m_rundownIntelButton.transform.localPosition = new UnityEngine.Vector3(m_activeMiscRundownData.IntelButtonPosition.x, m_activeMiscRundownData.IntelButtonPosition.y, m_activeMiscRundownData.IntelButtonPosition.z);
+                m_rundownInstance.m_rundownIntelButton.transform.localPosition = m_activeMiscRundownData.IntelButtonPosition;
                 //Log.Info("Overridden intel button");
             }
 
