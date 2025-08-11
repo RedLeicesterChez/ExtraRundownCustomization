@@ -166,6 +166,8 @@ namespace ExtraRundownCustomization.Handlers
                     comp.OnHoverOut(); // OnHoverOut is used for future proofing for liveedit
 
                     // Enable all objects that should be enabled (i.e they already were)
+                comp.SetIsUsed(data.enabled);
+
                     for (int i = 0; i < comp.transform.GetChildCount(); i++)
                     {
                         GameObject obj = comp.transform.GetChild(i).gameObject;

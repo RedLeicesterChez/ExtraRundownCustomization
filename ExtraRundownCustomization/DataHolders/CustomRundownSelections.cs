@@ -114,6 +114,7 @@ namespace ExtraRundownCustomization.DataHolders
     public class RundownSelector
     {
         public bool show { get; set; } = true; // default value for backcompat
+        public bool enabled { get; set; } = true;
         public string name { get; set; }
         public virtual string altText { get; set; }
 
