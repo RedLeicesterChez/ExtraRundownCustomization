@@ -207,12 +207,13 @@ namespace ExtraRundownCustomization.Handlers
                     Log.Error("expIcon was null in UpdateIcon");
                     return;
                 }
-                expIcon.SetShortName("<color=white>" + data.label);
+                expIcon.SetShortName(data.label);
                 expIcon.transform.localPosition = data.buttonPos;
                 if (data.changeScale)
                 {
                     expIcon.transform.localScale = data.buttonScale;
                 }
+
                 //Since local prog sets the colour earlier I'm free to override it here
                 //And yes my dumbass put it in the wrong thing i woke up 20 minutes ago okay
                 expIcon.m_colorUnlocked = data.buttonColor;
@@ -238,7 +239,10 @@ namespace ExtraRundownCustomization.Handlers
                 expIcon.m_statusText.color = new UnityEngine.Color(1, 1, 1, 1);
                 index++;
 
-                InteropAPI.ExecuteWhenPluginExists("Inas.LocalProgression", (BepInEx.PluginInfo _) => DoLocalProgressionStuff(expIcon));
+                if (data.enableOmnipotent)
+                {
+                    InteropAPI.ExecuteWhenPluginExists("Inas.LocalProgression", (BepInEx.PluginInfo _) => DoLocalProgressionStuff(expIcon));
+                }
 
                 //Log.Info("Updated Icon");
             }

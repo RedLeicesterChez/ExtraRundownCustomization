@@ -368,6 +368,7 @@
         public bool changeScale { get; set; } = false;
         public Vector3 buttonScale { get; set; } = new();
 
+        public bool enableOmnipotent { get; set; } = false;
         public Color buttonColor { get; set; } = new Color()
         {
             r = 1,
