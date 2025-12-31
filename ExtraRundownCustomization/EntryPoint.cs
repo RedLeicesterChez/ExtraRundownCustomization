@@ -8,7 +8,7 @@ namespace ExtraRundownCustomization
 {
     [BepInDependency("com.dak.MTFO", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("Inas.LocalProgression", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInPlugin("RLC.ExtraRundownCustomization", "ExtraRundownCustomization", "1.0.2")]
+    [BepInPlugin("RLC.ExtraRundownCustomization", "ExtraRundownCustomization", "1.0.1")]
     internal class EntryPoint : BasePlugin
     {
         private static Harmony _Harmony;
