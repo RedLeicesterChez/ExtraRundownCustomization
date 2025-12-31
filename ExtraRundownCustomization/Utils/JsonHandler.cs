@@ -1,9 +1,10 @@
-﻿using MTFO.API;
-using System.IO;
-using ExtraRundownCustomization.DataHolders;
-using System.Text.Json;
-using System.Text.Encodings.Web;
+﻿using ExtraRundownCustomization.DataHolders;
 using ExtraRundownCustomization.Handlers;
+using GTFO.API.Utilities;
+using MTFO.API;
+using System.IO;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 
 namespace ExtraRundownCustomization.Utils
 {
@@ -30,6 +31,9 @@ namespace ExtraRundownCustomization.Utils
             MTFOHotReloadAPI.OnHotReload += OnHotReload;
 
             LoadJson();
+
+            var listener = LiveEdit.CreateListener(ERC_CustomPath, "*.json", true); //Path Filter Recursive?
+            listener.FileChanged += (_) => LoadJson(true);
         }
 
         private static void LoadJson(bool isHotReload = false)
