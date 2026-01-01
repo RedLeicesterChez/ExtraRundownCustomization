@@ -32,8 +32,11 @@ namespace ExtraRundownCustomization.Utils
 
             LoadJson();
 
-            var listener = LiveEdit.CreateListener(ERC_CustomPath, "*.json", true); //Path Filter Recursive?
-            listener.FileChanged += (_) => LoadJson(true);
+            if (Configurations._enableLiveEdit.Value)
+            {
+                var listener = LiveEdit.CreateListener(ERC_CustomPath, "*.json", true); //Path Filter Recursive?
+                listener.FileChanged += (_) => LoadJson(true);
+            }
         }
 
         private static void LoadJson(bool isHotReload = false)

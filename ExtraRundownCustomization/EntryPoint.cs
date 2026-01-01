@@ -15,6 +15,7 @@ namespace ExtraRundownCustomization
         public override void Load()
         {
             _Harmony = new Harmony($"{VersionInfo.RootNamespace}.Harmony");
+            Configurations.LoadConfig(Config);
             GUI_Patches.Setup(_Harmony);
             JsonHandler.SetupJson();
             Log.LogInfo("ExtraRundownCustomisation Loaded");
