@@ -3,7 +3,6 @@
     public class MiscRundownData
     {
         public bool Enabled { get; set; } = false;
-        public bool EnableERCDataReload { get; set; } = false;
         public bool EnableTutorialButton { get; set; } = true;
         public bool EnableMatchmakingButton { get; set; } = true;
         public bool EnableButtonAboutTheRundown { get; set; } = true;

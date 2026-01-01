@@ -34,21 +34,6 @@ namespace ExtraRundownCustomization.Handlers
             {
                 UpdateExpeditionIcons();
             }
-            if (m_activeMiscRundownData.EnableERCDataReload)
-            {
-                AddReloadButton();
-            }
-        }
-
-        public static void AddReloadButton()
-        {
-            if (m_rundownInstance == null)
-            {
-                return;
-            }
-            //Log.Info("Adding reload button");
-            m_rundownInstance.m_matchmakeAllButton.SetText("RELOAD ERC DATA");
-            m_rundownInstance.m_matchmakeAllButton.OnBtnPressCallback = (Action<int>)((id) => JsonHandler.OnHotReload());
         }
 
         public static List<GameObject> rundownSelectors = new();
@@ -541,12 +526,6 @@ namespace ExtraRundownCustomization.Handlers
                 //Log.Info("enabled tier markers (text not overridden)");
 
             killme:
-                if (m_activeMiscRundownData.EnableERCDataReload)
-                {
-                    m_rundownInstance.m_matchmakeAllButton.gameObject.transform.localPosition = new UnityEngine.Vector3(0, 210, 0);
-                    AddReloadButton();
-                }
-                //Log.Info("Added ERC data reload button");
 
                 m_rundownInstance.transform.GetChild(2).GetChild(4).GetChild(18).gameObject.SetActive(false);
                 m_rundownInstance.m_rundownIntelButton.gameObject.SetActive(m_activeMiscRundownData.EnableIntelButton);
@@ -558,15 +537,6 @@ namespace ExtraRundownCustomization.Handlers
             m_rundownInstance.m_matchmakeAllButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
             m_rundownInstance.m_matchmakeAllButton.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableMatchmakingButton;
             //Log.Info("Overriden matchmakAll button");
-
-            if (m_activeMiscRundownData.EnableERCDataReload)
-            {
-                m_rundownInstance.m_matchmakeAllButton.transform.GetChild(0).gameObject.SetActive(true);
-                m_rundownInstance.m_matchmakeAllButton.GetComponent<BoxCollider2D>().enabled = true;
-                m_rundownInstance.m_matchmakeAllButton.GetComponent<TextMeshPro>().enabled = true;
-                AddReloadButton();
-            }
-            //Log.Info("made ERC data reload button again?");
             m_rundownInstance.m_discordButton.transform.GetChild(0).gameObject.SetActive(m_activeMiscRundownData.EnableButtonDiscord);
             m_rundownInstance.m_discordButton.GetComponent<BoxCollider2D>().enabled = m_activeMiscRundownData.EnableButtonDiscord;
             m_rundownInstance.m_discordButton.GetComponent<TextMeshPro>().enabled = m_activeMiscRundownData.EnableButtonDiscord;
