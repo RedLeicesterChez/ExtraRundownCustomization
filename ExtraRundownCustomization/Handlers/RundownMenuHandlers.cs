@@ -40,7 +40,6 @@ namespace ExtraRundownCustomization.Handlers
 
         public static void UpdateRundownSelections(bool isRepeat = false)
         {
-            AddReloadButton();
             //Log.Info("Updating Rundown Selections");
             if (!m_activeRundownSelectionData.Enabled)
             {
