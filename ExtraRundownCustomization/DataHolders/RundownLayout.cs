@@ -4,222 +4,242 @@
     public class RundownLayout
     {
         public bool Enabled { get; set; } = false;
+
+        public IndividualRundownLayout[] RundownLayouts { get; set; } = new IndividualRundownLayout[]
+        {
+            new IndividualRundownLayout()
+            {
+                Enabled = false,
+                RundownDatablockID = 32,
+
+                Tier1 = [
+                    new ExpeditionButton()
+                    {
+                        label = "R1A1",
+                        buttonPos = new Vector3()
+                        {
+                            x = -75.0f,
+                            y = 0.0f,
+                            z = 0.0f,
+                        },
+                        buttonScale = new Vector3()
+                        {
+                            x = 10.0f,
+                            y = 10.0f,
+                            z = 10.0f,
+                        },
+                        buttonColor = new Color()
+                        {
+                            r = 1.0f,
+                            g = 1.0f,
+                            b = 1.0f,
+                            a = 1.0f,
+                        },
+                        enableHeat = true,
+                        heatText = "ARTIFACT HEAT: <color=orange>100%",
+                        statusPos = new Vector3
+                        {
+                            x = -156.378f,
+                            y = -67.81f,
+                            z = -1.36f,
+                        },
+                        overrideDecryptText = false,
+                        decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
+                    },
+                ],
+
+                Tier2 = [
+                    new ExpeditionButton()
+                    {
+                        label = "R1B1",
+                        buttonPos = new Vector3()
+                        {
+                            x = -412.5f,
+                            y = 0.0f,
+                            z = 0.0f,
+                        },
+                        buttonScale = new Vector3()
+                        {
+                            x = 1.818f,
+                            y = 1.818f,
+                            z = 1.818f,
+                        },
+                        buttonColor = new Color()
+                        {
+                            r = 1.0f,
+                            g = 1.0f,
+                            b = 1.0f,
+                            a = 1.0f,
+                        },
+                        enableHeat = true,
+                        heatText = "ARTIFACT HEAT: <color=orange>100%",
+                        statusPos = new Vector3
+                        {
+                            x = -156.378f,
+                            y = -67.81f,
+                            z = -1.36f,
+                        },
+                        overrideDecryptText = false,
+                        decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
+                    },
+
+                    new ExpeditionButton()
+                    {
+                        label = "R1B2",
+                        buttonPos = new Vector3()
+                        {
+                            x = 412.5f,
+                            y = 0.0f,
+                            z = 0.0f,
+                        },
+                        buttonScale = new Vector3()
+                        {
+                            x = 1.818f,
+                            y = 1.818f,
+                            z = 1.818f,
+                        },
+                        buttonColor = new Color()
+                        {
+                            r = 1.0f,
+                            g = 1.0f,
+                            b = 1.0f,
+                            a = 1.0f,
+                        },
+                        enableHeat = true,
+                        heatText = "ARTIFACT HEAT: <color=orange>100%",
+                        statusPos = new Vector3
+                        {
+                            x = -156.378f,
+                            y = -67.81f,
+                            z = -1.36f,
+                        },
+                        overrideDecryptText = false,
+                        decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
+                    },
+                ],
+
+                Tier3 = [
+                    new ExpeditionButton()
+                    {
+                        label = "R1C1",
+                        buttonPos = new Vector3()
+                        {
+                            x = -487.5f,
+                            y = 0.0f,
+                            z = 0.0f,
+                        },
+                        buttonScale = new Vector3()
+                        {
+                            x = 1.5385f,
+                            y = 1.5385f,
+                            z = 1.5385f,
+                        },
+                        buttonColor = new Color()
+                        {
+                            r = 1.0f,
+                            g = 1.0f,
+                            b = 1.0f,
+                            a = 1.0f,
+                        },
+                        enableHeat = true,
+                        heatText = "ARTIFACT HEAT: <color=orange>100%",
+                        statusPos = new Vector3
+                        {
+                            x = -156.378f,
+                            y = -67.81f,
+                            z = -1.36f,
+                        },
+                        overrideDecryptText = false,
+                        decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
+                    },
+
+                    new ExpeditionButton()
+                    {
+                        label = "R1C2",
+                        buttonPos = new Vector3()
+                        {
+                            x = 487.5f,
+                            y = 0.0f,
+                            z = 0.0f,
+                        },
+                        buttonScale = new Vector3()
+                        {
+                            x = 1.5385f,
+                            y = 1.5385f,
+                            z = 1.5385f,
+                        },
+                        buttonColor = new Color()
+                        {
+                            r = 1.0f,
+                            g = 1.0f,
+                            b = 1.0f,
+                            a = 1.0f,
+                        },
+                        enableHeat = true,
+                        heatText = "ARTIFACT HEAT: <color=orange>100%",
+                        statusPos = new Vector3
+                        {
+                            x = -156.378f,
+                            y = -67.81f,
+                            z = -1.36f,
+                        },
+                        overrideDecryptText = false,
+                        decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
+                    },
+                ],
+
+                Tier4 = [
+                    new ExpeditionButton()
+                    {
+                        label = "R1D1",
+                        buttonPos = new Vector3()
+                        {
+                            x = -75.0f,
+                            y = 0.0f,
+                            z = 0.0f,
+                        },
+                        buttonScale = new Vector3()
+                        {
+                            x = 10.0f,
+                            y = 10.0f,
+                            z = 10.0f,
+                        },
+                        buttonColor = new Color()
+                        {
+                            r = 1.0f,
+                            g = 1.0f,
+                            b = 1.0f,
+                            a = 1.0f,
+                        },
+                        enableHeat = true,
+                        heatText = "ARTIFACT HEAT: <color=orange>100%",
+                        statusPos = new Vector3
+                        {
+                            x = -156.378f,
+                            y = -67.81f,
+                            z = -1.36f,
+                        },
+                        overrideDecryptText = false,
+                        decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
+                    },
+                ],
+
+                Tier5 = []
+            }
+        };
+        
         public IndividualRundownLayout R1 { get; set; } = new IndividualRundownLayout()
         {
             Enabled = false,
-            RundownDatablockID = 32,
+            RundownDatablockID = 33,
 
-            Tier1 = [
-                new ExpeditionButton()
-                {
-                    label = "R1A1",
-                    buttonPos = new Vector3()
-                    {
-                        x = -75.0f,
-                        y = 0.0f,
-                        z = 0.0f,
-                    },
-                    buttonScale = new Vector3()
-                    {
-                        x = 10.0f,
-                        y = 10.0f,
-                        z = 10.0f,
-                    },
-                    buttonColor = new Color()
-                    {
-                        r = 1.0f,
-                        g = 1.0f,
-                        b = 1.0f,
-                        a = 1.0f,
-                    },
-                    enableHeat = true,
-                    heatText = "ARTIFACT HEAT: <color=orange>100%",
-                    statusPos = new Vector3
-                    {
-                        x = -156.378f,
-                        y = -67.81f,
-                        z = -1.36f,
-                    },
-                    overrideDecryptText = false,
-                    decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
-                },
-            ],
+            Tier1 = [],
 
-            Tier2 = [
-                new ExpeditionButton()
-                {
-                    label = "R1B1",
-                    buttonPos = new Vector3()
-                    {
-                        x = -412.5f,
-                        y = 0.0f,
-                        z = 0.0f,
-                    },
-                    buttonScale = new Vector3()
-                    {
-                        x = 1.818f,
-                        y = 1.818f,
-                        z = 1.818f,
-                    },
-                    buttonColor = new Color()
-                    {
-                        r = 1.0f,
-                        g = 1.0f,
-                        b = 1.0f,
-                        a = 1.0f,
-                    },
-                    enableHeat = true,
-                    heatText = "ARTIFACT HEAT: <color=orange>100%",
-                    statusPos = new Vector3
-                    {
-                        x = -156.378f,
-                        y = -67.81f,
-                        z = -1.36f,
-                    },
-                    overrideDecryptText = false,
-                    decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
-                },
+            Tier2 = [],
 
-                new ExpeditionButton()
-                {
-                    label = "R1B2",
-                    buttonPos = new Vector3()
-                    {
-                        x = 412.5f,
-                        y = 0.0f,
-                        z = 0.0f,
-                    },
-                    buttonScale = new Vector3()
-                    {
-                        x = 1.818f,
-                        y = 1.818f,
-                        z = 1.818f,
-                    },
-                    buttonColor = new Color()
-                    {
-                        r = 1.0f,
-                        g = 1.0f,
-                        b = 1.0f,
-                        a = 1.0f,
-                    },
-                    enableHeat = true,
-                    heatText = "ARTIFACT HEAT: <color=orange>100%",
-                    statusPos = new Vector3
-                    {
-                        x = -156.378f,
-                        y = -67.81f,
-                        z = -1.36f,
-                    },
-                    overrideDecryptText = false,
-                    decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
-                },
-            ],
+            Tier3 = [],
 
-            Tier3 = [
-                new ExpeditionButton()
-                {
-                    label = "R1C1",
-                    buttonPos = new Vector3()
-                    {
-                        x = -487.5f,
-                        y = 0.0f,
-                        z = 0.0f,
-                    },
-                    buttonScale = new Vector3()
-                    {
-                        x = 1.5385f,
-                        y = 1.5385f,
-                        z = 1.5385f,
-                    },
-                    buttonColor = new Color()
-                    {
-                        r = 1.0f,
-                        g = 1.0f,
-                        b = 1.0f,
-                        a = 1.0f,
-                    },
-                    enableHeat = true,
-                    heatText = "ARTIFACT HEAT: <color=orange>100%",
-                    statusPos = new Vector3
-                    {
-                        x = -156.378f,
-                        y = -67.81f,
-                        z = -1.36f,
-                    },
-                    overrideDecryptText = false,
-                    decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
-                },
-
-                new ExpeditionButton()
-                {
-                    label = "R1C2",
-                    buttonPos = new Vector3()
-                    {
-                        x = 487.5f,
-                        y = 0.0f,
-                        z = 0.0f,
-                    },
-                    buttonScale = new Vector3()
-                    {
-                        x = 1.5385f,
-                        y = 1.5385f,
-                        z = 1.5385f,
-                    },
-                    buttonColor = new Color()
-                    {
-                        r = 1.0f,
-                        g = 1.0f,
-                        b = 1.0f,
-                        a = 1.0f,
-                    },
-                    enableHeat = true,
-                    heatText = "ARTIFACT HEAT: <color=orange>100%",
-                    statusPos = new Vector3
-                    {
-                        x = -156.378f,
-                        y = -67.81f,
-                        z = -1.36f,
-                    },
-                    overrideDecryptText = false,
-                    decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
-                },
-            ],
-
-            Tier4 = [
-                new ExpeditionButton()
-                {
-                    label = "R1D1",
-                    buttonPos = new Vector3()
-                    {
-                        x = -75.0f,
-                        y = 0.0f,
-                        z = 0.0f,
-                    },
-                    buttonScale = new Vector3()
-                    {
-                        x = 10.0f,
-                        y = 10.0f,
-                        z = 10.0f,
-                    },
-                    buttonColor = new Color()
-                    {
-                        r = 1.0f,
-                        g = 1.0f,
-                        b = 1.0f,
-                        a = 1.0f,
-                    },
-                    enableHeat = true,
-                    heatText = "ARTIFACT HEAT: <color=orange>100%",
-                    statusPos = new Vector3
-                    {
-                        x = -156.378f,
-                        y = -67.81f,
-                        z = -1.36f,
-                    },
-                    overrideDecryptText = false,
-                    decryptText = "://err: UNABLE TO DECRYPT; QP_%: 66,1‬"
-                },
-            ],
+            Tier4 = [],
 
             Tier5 = []
         };
@@ -368,7 +388,11 @@
         public bool changeScale { get; set; } = false;
         public Vector3 buttonScale { get; set; } = new();
 
+        public bool dontChangeWhenLocked { get; set; } = false;
+
         public bool enableOmnipotent { get; set; } = false;
+        
+        public bool changeColor {get; set;} = false;
         public Color buttonColor { get; set; } = new Color()
         {
             r = 1,

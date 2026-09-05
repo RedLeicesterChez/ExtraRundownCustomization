@@ -82,6 +82,7 @@ namespace ExtraRundownCustomization.Utils
         private static readonly JsonSerializerOptions _setting = new()
         {
             ReadCommentHandling = JsonCommentHandling.Skip,
+            AllowTrailingCommas = true,
             IncludeFields = true,
             PropertyNameCaseInsensitive = true,
             WriteIndented = true,

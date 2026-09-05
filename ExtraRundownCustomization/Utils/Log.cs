@@ -1,6 +1,5 @@
 ﻿using BepInEx.Core.Logging.Interpolation;
 using BepInEx.Logging;
-using System.Diagnostics;
 
 namespace ExtraRundownCustomization.Utils
 {

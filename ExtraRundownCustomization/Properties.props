@@ -41,6 +41,7 @@
 		<Reference Include="$(PluginsFolder)\GTFO-API.dll" Private="false" />
 		<Reference Include="$(PluginsFolder)\dakkhuza-MTFO\MTFO.dll" Private="false" />
 		<Reference Include="$(PluginsFolder)\Inas07-LocalProgression\Inas07.LocalProgression.dll" Private="false" />
+		<Reference Include="$(PluginsFolder)\Flowaria-MTFO_Extension_PartialData\MTFO.Ext.PartialData.dll" Private="false" />
 	</ItemGroup>
 	
 	<!-- NuGet Packages -->

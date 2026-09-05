@@ -2,7 +2,6 @@
 using ExtraRundownCustomization.DataHolders;
 using ExtraRundownCustomization.Utils;
 using GameData;
-using Il2CppSystem;
 using LocalProgression;
 using System.Collections.Generic;
 using TMPro;
@@ -13,7 +12,7 @@ using System.Linq;
 
 namespace ExtraRundownCustomization.Handlers
 {
-    public class RundownMenuHandlers
+    internal static class RundownMenuHandlers
     {
         public static CustomRundownSelections m_activeRundownSelectionData;
         public static RundownLayout m_activeGlobalRundownLayoutData;
@@ -50,7 +49,7 @@ namespace ExtraRundownCustomization.Handlers
 
             if (__instance == null)
             {
-                Log.Info("Instance is null");
+                Log.Error("PageRundownInstance is null when updating rundown selections");
                 return;
             }
 
@@ -176,13 +175,13 @@ namespace ExtraRundownCustomization.Handlers
             }
             if (m_rundownInstance == null)
             {
-                Log.Error("m_rundownInstance is null");
+                Log.Error("m_rundownInstance is null when updating expedition icons");
                 return;
             }
 
             m_rundownInstance.m_textRundownHeader.text = m_rundownInstance.m_currentRundownData.StorytellingData.Title;
 
-            int index;
+            int index = 0;
             void UpdateIcon(CM_ExpeditionIcon_New expIcon, ExpeditionButton data)
             {
                 //Log.Info("Updating Expedition Icon");
@@ -198,24 +197,36 @@ namespace ExtraRundownCustomization.Handlers
                     expIcon.transform.localScale = data.buttonScale;
                 }
 
-                //Since local prog sets the colour earlier I'm free to override it here
-                //And yes my dumbass put it in the wrong thing i woke up 20 minutes ago okay
-                expIcon.m_colorUnlocked = data.buttonColor;
-                expIcon.m_colorStory = data.buttonColor;
-                expIcon.m_colorLocked = data.buttonColor;
-
-                // Set the hoverout alpha since the expedition icon gets reset frequently anyway
-                // the hoverout color change doesn't stay long and causes a small visual bug
-                expIcon.m_spriteAlphaOut = expIcon.m_spriteAlphaOver;
-                expIcon.SetBorderColor(data.buttonColor);
-                expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
-                expIcon.m_artifactHeatText.text = data.heatText;
-                expIcon.m_statusText.transform.localPosition = data.statusPos;
                 if (data.overrideDecryptText)
                 {
                     expIcon.m_decryptErrorText.gameObject.SetActive(true);
                     expIcon.m_decryptErrorText.text = data.decryptText;
                 }
+
+                // Set the hoverout alpha since the expedition icon gets reset frequently anyway
+                // the hoverout color change doesn't stay long and causes a small visual bug
+                expIcon.m_spriteAlphaOut = expIcon.m_spriteAlphaOver;
+
+                if (expIcon.Status == eExpeditionIconStatus.LockedAndScrambled)
+                {
+                    index++;
+                    return;
+                }
+
+                expIcon.SetShortName(data.label);
+
+                //Since local prog sets the color earlier I'm free to override it here
+                if (data.changeColor)
+                {
+                    expIcon.m_colorUnlocked = data.buttonColor;
+                    expIcon.m_colorStory = data.buttonColor;
+                    expIcon.m_colorLocked = data.buttonColor;
+
+                    expIcon.SetBorderColor(data.buttonColor);
+                }
+                expIcon.m_artifactHeatText.gameObject.SetActive(data.enableHeat);
+                expIcon.m_artifactHeatText.text = data.heatText;
+                expIcon.m_statusText.transform.localPosition = data.statusPos;
                 if (expIcon._Status_k__BackingField == eExpeditionIconStatus.TierLocked && expIcon.Accessibility == eExpeditionAccessibility.UnlockedByExpedition)
                 {
                     expIcon.SetUnlockedByText();
@@ -395,6 +406,14 @@ namespace ExtraRundownCustomization.Handlers
             var correctRundown = allRundownDatas.FirstOrDefault(rundownData =>
                 rundownData.RundownDatablockID == m_rundownInstance.m_currentRundownData.persistentID
             );
+
+            foreach (var rundown in m_activeGlobalRundownLayoutData.RundownLayouts)
+            {
+                if (rundown.RundownDatablockID == m_rundownInstance.m_currentRundownData.persistentID)
+                {
+                    correctRundown = rundown;
+                }
+            }
 
             if (correctRundown != null)
                 UpdateRundown(correctRundown);
@@ -577,6 +596,12 @@ namespace ExtraRundownCustomization.Handlers
 
         public static void LazyUpdate() //Not so lazy update :(
         {
+            if (m_rundownInstance == null)
+            {
+                Log.Error("Rundown instance was null on lazy update");
+                return;
+            }
+            
             if (m_popupMovementActive)
             {
                 foreach (CM_ExpeditionIcon_New icon in m_rundownInstance.m_expIconsAll)
@@ -592,5 +617,31 @@ namespace ExtraRundownCustomization.Handlers
                 }
             }
         }
+
+        /*//Selectors R1: 0, R2: 1, R3:2 (so on and so forth)
+        internal static List<GameObject> RundownSelectorPrefabs = [];
+        internal static uint[] RundownIDsToLoad = [];
+
+        public static void CustomRundownSelectorSetup(uint[] IDsToLoad)
+        {
+            foreach (var selector in m_activeRundownSelectionData.RundownSelectors)
+            {
+                if (IDsToLoad.Contains(selector.LinkedRundownID))
+                {
+                    PlaceCustomRundownSelector(selector);
+                    Log.Info("Placing custom selector ID: " + selector.LinkedRundownID);
+                }
+            }
+        }
+
+        private static int customSelectorCount = 0;
+        private static void PlaceCustomRundownSelector(RundownSelector_Custom selector)
+        {
+            Transform SelectorRoot = m_rundownInstance.m_rundownSelections[0].transform.parent;
+
+            GameObject SelectorPrefab = RundownSelectorPrefabs[selector.SelectorStyle.CompareTo(RundownSelectorPrefabs)];
+
+            Object.Instantiate(SelectorPrefab, SelectorRoot);
+        }*/
     }
 }

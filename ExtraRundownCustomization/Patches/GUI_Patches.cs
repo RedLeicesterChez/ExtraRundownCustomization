@@ -34,6 +34,7 @@ namespace ExtraRundownCustomization.Patches
         {
             public static void Postfix(CM_PageRundown_New __instance)
             {
+                RundownMenuHandlers.m_rundownInstance = __instance;
                 if (__instance.m_currentRundownData == null)
                 {
                     __instance.m_textRundownHeaderTop.text = RundownMenuHandlers.m_activeRundownSelectionData.TextHeaderTop;
@@ -111,8 +112,9 @@ namespace ExtraRundownCustomization.Patches
         [HarmonyPatch(typeof(CM_PageRundown_New), "OnEnable")]
         private class Patch_CM_PageRundown_New_OnEnable
         {
-            public static void Postfix()
+            public static void Postfix(CM_PageRundown_New __instance)
             {
+                RundownMenuHandlers.m_rundownInstance = __instance;
                 RundownMenuHandlers.UpdateRundownSelections();
             }
         }
@@ -148,9 +150,9 @@ namespace ExtraRundownCustomization.Patches
         {
             public static void Postfix(CM_PageRundown_New __instance)
             {
-                __instance.m_selectRundownButton.OnBtnPressCallback += (Action<int>)((id) => RundownMenuHandlers.UpdateRundownSelections());
-
+                Log.Info("PageRundown is setup");
                 RundownMenuHandlers.m_rundownInstance = __instance;
+                __instance.m_selectRundownButton.OnBtnPressCallback += (Action<int>)((id) => RundownMenuHandlers.UpdateRundownSelections());
                 RundownMenuHandlers.UpdateRundownSelections();
                 RundownMenuHandlers.SetupRundownFeatures();
             }

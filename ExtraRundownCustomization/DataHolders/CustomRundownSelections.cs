@@ -9,6 +9,23 @@ namespace ExtraRundownCustomization.DataHolders
         public string TextHeader { get; set; } = "SELECT RUNDOWN";
         public string TextHeaderTop { get; set; } = "<color=red>CLCTR MULTITHREAD PROCESSOR ACTIVATED";
 
+        /*public RundownSelector_Custom[] RundownSelectors { get; set; } = new RundownSelector_Custom[]
+        {
+            new RundownSelector_Custom
+            {
+                name = "R9",
+                altText = "",
+                LinkedRundownID = 0,
+
+                pos = new() { x = -476.0f, y = 45.0f, z = 0.0f },
+                rot = new() { x = 0.0f, y = 0.0f, z = 0.0f },
+                scale = new() { x = 1.0f, y = 1.0f, z = 1.0f },
+
+                namePos = new() { x = 0.0f, y = 39.0f, z = 0.0f },
+                altTextPos = new() { x = -46.0f, y = 34.8f, z = 0.0f },
+            }
+        }; //*/
+
         public RundownSelector Selector_R1 { get; set; } = new RundownSelector
         {
             name = "R1",
@@ -134,5 +151,23 @@ namespace ExtraRundownCustomization.DataHolders
         public override string altText { get; set; }
         [JsonIgnore]
         public override Vector3 altTextPos { get; set; }
+    }
+    
+    public class RundownSelector_Custom : RundownSelector
+    {
+        public uint LinkedRundownID { get; set; } = 0;
+        public eSelectorStyle SelectorStyle { get; set; } = eSelectorStyle.Rundown1;
+
+        public enum eSelectorStyle
+        {
+            Rundown1 = 0,
+            Rundown2 = 1,
+            Rundown3 = 2,
+            Rundown4 = 3,
+            Rundown5 = 4,
+            Rundown6 = 5,
+            Rundown7 = 6,
+            Rundown8 = 7,
+        }
     }
 }
