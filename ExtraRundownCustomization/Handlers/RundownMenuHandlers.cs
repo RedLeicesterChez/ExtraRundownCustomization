@@ -9,6 +9,7 @@ using UnityEngine;
 using MTFO.API;
 using GTFO.API;
 using System.Linq;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 namespace ExtraRundownCustomization.Handlers
 {
@@ -36,9 +37,31 @@ namespace ExtraRundownCustomization.Handlers
         }
 
         public static List<GameObject> rundownSelectors = new();
+        
+        private static System.Collections.IEnumerator FixRundownName(CM_PageRundown_New __instance)
+        {
+            __instance.m_textRundownHeader.gameObject.SetActive(false);
+            yield return new WaitForSeconds(5.6f);
+            __instance.m_textRundownHeader.gameObject.SetActive(true);
+            yield return null;
+        }
 
         public static void UpdateRundownSelections(bool isRepeat = false)
         {
+            if (m_rundownInstance == null)
+            {
+                Log.Error("PageRundownInstance is null when updating rundown selections");
+                return;
+            }
+            
+            if (m_rundownInstance.m_currentRundownData != null)
+            {
+                m_rundownInstance.m_textRundownHeaderTop.text = "";
+                m_rundownInstance.m_textRundownHeader.text = "<size=300%><color=white>" + m_rundownInstance.m_currentRundownData.StorytellingData.Title;
+                CoroutineManager.StartCoroutine(FixRundownName(m_rundownInstance).WrapToIl2Cpp());
+                return;
+            }
+            
             //Log.Info("Updating Rundown Selections");
             if (!m_activeRundownSelectionData.Enabled)
             {
@@ -46,20 +69,7 @@ namespace ExtraRundownCustomization.Handlers
                 return;
             }
             CM_PageRundown_New __instance = m_rundownInstance;
-
-            if (__instance == null)
-            {
-                Log.Error("PageRundownInstance is null when updating rundown selections");
-                return;
-            }
-
             UpdateMiscFeatures();
-
-            if (m_rundownInstance.m_currentRundownData != null)
-            {
-                __instance.m_textRundownHeaderTop.text = "<color=white><size=300%>" + m_rundownInstance.m_currentRundownData.StorytellingData.Title;
-                return;
-            }
 
             __instance.m_textRundownHeader.text = m_activeRundownSelectionData.TextHeader;
             __instance.m_textRundownHeaderTop.text = m_activeRundownSelectionData.TextHeaderTop;
@@ -407,13 +417,14 @@ namespace ExtraRundownCustomization.Handlers
                 rundownData.RundownDatablockID == m_rundownInstance.m_currentRundownData.persistentID
             );
 
+            /*
             foreach (var rundown in m_activeGlobalRundownLayoutData.RundownLayouts)
             {
                 if (rundown.RundownDatablockID == m_rundownInstance.m_currentRundownData.persistentID)
                 {
                     correctRundown = rundown;
                 }
-            }
+            }*/
 
             if (correctRundown != null)
                 UpdateRundown(correctRundown);

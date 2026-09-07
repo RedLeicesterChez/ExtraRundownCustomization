@@ -5,6 +5,7 @@
     {
         public bool Enabled { get; set; } = false;
 
+        /*
         public IndividualRundownLayout[] RundownLayouts { get; set; } = new IndividualRundownLayout[]
         {
             new IndividualRundownLayout()
@@ -227,6 +228,7 @@
                 Tier5 = []
             }
         };
+        */
         
         public IndividualRundownLayout R1 { get; set; } = new IndividualRundownLayout()
         {
@@ -388,7 +390,7 @@
         public bool changeScale { get; set; } = false;
         public Vector3 buttonScale { get; set; } = new();
 
-        public bool dontChangeWhenLocked { get; set; } = false;
+        public bool dontChangeColorWhenLocked { get; set; } = false;
 
         public bool enableOmnipotent { get; set; } = false;
         
